@@ -7,6 +7,8 @@
   <meta name="google-site-verification" content="tm5Y6ZNTf-lBqbwniGjQPv1q02o2TuUQZ9GTYa4SMLg" />
   <title>eigenwallet — The Monero wallet for the future</title>
   <link rel="stylesheet" href="latex.css" />
+  <link rel="stylesheet" href="prism/prism.css" />
+  <link rel="icon" type="image/png" href="imgs/icon.png" />
 </head>
 
 <body id="top" class="text-justify">
@@ -27,6 +29,59 @@
   <main>
     <article>
       <hr style="margin: 2rem 0;" />
+
+      <h2 id="how">What?</h2>
+      <p>
+        <strong><em>eigenwallet</em></strong> is an ambitious attempt to combine the frontier of crypto privacy technology in a neat user-friendly packaging and make it accessible to all.
+        <ul>
+          <li>
+            <em>eigenwallet</em> is a self-custody Monero and Bitcoin wallet 
+          </li>
+          <li>
+            <em>eigenwallet</em> is a battle-tested ($>3$ years) Monero $\leftrightarrow$ Bitcoin atomic swap implementation 
+          </li>
+          <li>
+            <em>eigenwallet</em> provides network privacy with its first-class Tor support (using arti<sup><a href="#fn10" id="ref10">10</a></sup>)
+          </li>
+          <li>
+            <em>eigenwallet</em> is platform-agnostic and works on windows, linux, mac, ios and android
+          </li>
+          <li>
+            <em>eigenwallets</em> form a peer-to-peer network between its users which we call the <em>eigenweb</em>.
+            <ul>
+              <li>
+                the <em>eigenweb</em> assigns a local trust score to each <em>peer</em> using the <em>eigentrust</em> system<sup><a href="#fn9" id="ref9">9</a></sup>
+              </li>
+              <li>
+                the <em>eigenweb</em> is a message relay network
+              </li>
+              <li>
+                the <em>eigenweb</em> is used to relay data packets for atomic swaps
+              </li>
+              <li>
+                the <em>eigenweb</em> is not a blockchain and has no coin
+              </li>
+            </ul>
+          </li>
+          <li>
+            <em>eigenwallet</em> magically syncs itself across different devices using a protocol called <em>eigensync</em>. It allows:
+            <ul>
+              <li>
+                performing blockchain synchronization just once on one device, and then sharing that wallet state across all your other devices
+              </li>
+              <li>
+                starting a swap on one device and then completing it on another
+              </li>
+              <li>
+                outsourcing the blockchain synchronization to a trusted party
+              </li>
+              <li>
+                outsourcing the blockchain synchronization to your home server
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </p>
 
       <h2 id="why">Why?</h2>
       
@@ -80,10 +135,59 @@
         <li>have high liquidity (comparable to centralized exchanges)</li>
       </ul>
 
-      <h2 id="how">How?</h2>
+      <!-- <h2 id="how">How?</h2>
       
       <p>
+        There are four (major) ways for new users to acquire Monero.
       </p>
+      <caption>A sample table with a descriptive caption.</caption>
+
+      <table>
+        <caption>Potential Onramps for Monero</caption>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Self-Custody?</th>
+            <th>Decentralized?</th>
+            <th>Know-Your-Customer</th>
+            <th>Privacy?</th>
+            <th>Liquidity?</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>Footer 1</th>
+            <th>Footer 2</th>
+            <th>Footer 3</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          <tr>
+            <td>Instant Exchange</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Sometimes required, often arbitrarily witdout prior warning</td>
+            <td>Collect IPs, reasonably private when using over Tor but requires expertise.</td>
+            <td>0-1 BTC</td>
+          </tr>
+          <tr>
+            <td>Exchange</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Almost always required</td>
+            <td>Collect extensive data and share witd otders, similiar to banks.</td>
+            <td>0-100 BTC</td>
+          </tr>
+          <tr>
+            <td>Bisq / Haveno / RetoSwap</td>
+            <td>Yes</td>
+            <td>Yes</td>
+            <td>Mostly not required</td>
+            <td>Private</td>
+            <td>0-5 BTC</td>
+          </tr>
+        </tbody>
+      </table> -->
 
       <div class="footnotes">
         <p id="fn1">
@@ -146,6 +250,18 @@
           Market capitalization data demonstrates Monero's significantly higher market valuation compared to other major privacy-focused cryptocurrencies, indicating stronger market confidence and adoption.
           <a href="#ref8" title="Jump back to footnote 8 in the text.">↩</a>
         </p>
+        <p id="fn9">
+          9. Kamvar, Sepandar D., Mario T. Schlosser, and Hector Garcia-Molina. "The EigenTrust Algorithm for Reputation Management in P2P Networks." 
+          <em>Proceedings of the 11th International Conference on World Wide Web</em>, 2003.
+          <a class="break-all" href="https://nlp.stanford.edu/pubs/eigentrust.pdf">https://nlp.stanford.edu/pubs/eigentrust.pdf</a>.
+          <a href="#ref9" title="Jump back to footnote 9 in the text.">↩</a>
+        </p>
+        <p id="fn10">
+          10. The Tor Project. "Arti: A Tor implementation in Rust." 
+          <a class="break-all" href="https://tpo.pages.torproject.net/core/arti/about/">https://tpo.pages.torproject.net/core/arti/about/</a>. 
+          <em>"Arti is designed from the ground up to work as a modular, embeddable library that other applications can use."</em>
+          <a href="#ref10" title="Jump back to footnote 10 in the text.">↩</a>
+        </p>
       </div>
 
     </article>
@@ -158,8 +274,9 @@
       },
     }
   </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mtml-chtml.js"></script>
-
+  <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
 </body>
 
 </html>
