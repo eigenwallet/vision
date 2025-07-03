@@ -32,7 +32,7 @@
 
       <h2 id="how">What?</h2>
       <p>
-        <strong><em>eigenwallet</em></strong> is an ambitious attempt to combine the frontier of crypto privacy technology in a neat user-friendly packaging and make it accessible to all.
+        <strong><em>eigenwallet</em></strong> is an ambitious effort to combine the frontier of crypto privacy technology in a neat user-friendly packaging and make it accessible to all.
         <ul>
           <li>
             <em>eigenwallet</em> is a self-custody Monero and Bitcoin wallet 
@@ -64,19 +64,30 @@
             </ul>
           </li>
           <li>
-            <em>eigenwallet</em> magically syncs itself across different devices using a protocol called <em>eigensync</em>. It allows:
+            <em>eigenwallet</em> magically syncs itself across different devices using a protocol called <em>eigensync</em>.
             <ul>
               <li>
-                performing blockchain synchronization just once on one device, and then sharing that wallet state across all your other devices
+                <em>eigensync</em> allows you to:
+                <ul>
+                  <li>
+                    perform blockchain synchronization just once on one device, and then share that wallet state across all your other devices
+                  </li>
+                  <li>
+                    start a swap on one device and then complete it on another
+                  </li>
+                  <li>
+                    outsource the expensive blockchain synchronization to a trusted party
+                  </li>
+                  <li>
+                    outsource the expensive blockchain synchronization to your home server
+                  </li>
+                </ul>
               </li>
               <li>
-                starting a swap on one device and then completing it on another
+                <em>eigensync</em> uses a <em>conflict-free replicated data type</em><sup><a href="#fn11" id="ref11">11</a></sup> that is split into state packets and stored on multiple devices
               </li>
               <li>
-                outsourcing the blockchain synchronization to a trusted party
-              </li>
-              <li>
-                outsourcing the blockchain synchronization to your home server
+                <em>eigensync</em> is fully private and anonymous. State packets are encrypted with the users private key
               </li>
             </ul>
           </li>
@@ -261,6 +272,13 @@
           <a class="break-all" href="https://tpo.pages.torproject.net/core/arti/about/">https://tpo.pages.torproject.net/core/arti/about/</a>. 
           <em>"Arti is designed from the ground up to work as a modular, embeddable library that other applications can use."</em>
           <a href="#ref10" title="Jump back to footnote 10 in the text.">↩</a>
+        </p>
+        <p id="fn11">
+          11. Wikipedia contributors. "Conflict-free replicated data type." 
+          <em>Wikipedia, The Free Encyclopedia</em>. 
+          <a class="break-all" href="https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type">https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type</a>. 
+          <em>"In distributed computing, a conflict-free replicated data type (CRDT) is a data structure that is replicated across multiple computers in a network, with the following features: The application can update any replica independently, concurrently and without coordinating with other replicas."</em>
+          <a href="#ref11" title="Jump back to footnote 11 in the text.">↩</a>
         </p>
       </div>
 
