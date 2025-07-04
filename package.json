@@ -3,6 +3,7 @@
   "version": "1.13.0",
   "description": "A small CSS library to make your website look like a LaTeX document",
   "main": "./style.min.css",
+  "type": "module",
   "files": [
     "dist",
     "fonts",
@@ -11,8 +12,12 @@
     "latex.min.css"
   ],
   "scripts": {
-    "prepack": "vite build && cp dist/latex.css latex.min.css",
-    "build": "npm pack --dry-run"
+    "prepack": "vite build && cp dist-build/latex.css latex.min.css",
+    "build": "npm pack --dry-run",
+    "build:md": "tsx builder/build.ts",
+    "dev": "vite",
+    "watch": "chokidar 'content/*.md' 'builder/build.ts' -c 'npm run build:md'",
+    "test": "tsx builder/test.ts"
   },
   "repository": {
     "type": "git",
@@ -32,5 +37,12 @@
   "homepage": "https://latex.vercel.app",
   "devDependencies": {
     "vite": "^4.4.9"
+  },
+  "dependencies": {
+    "@types/node": "^24.0.10",
+    "chokidar-cli": "^3.0.0",
+    "marked": "^16.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }
