@@ -26,24 +26,9 @@ all.
   Android
 - _eigenwallets_ form a peer-to-peer network between its users which we call the
   [_eigenweb_](eigenweb.html).
-  - the _eigenweb_ assigns a local trust score to each _peer_ using the
-    _eigentrust_ system^[9]
-  - the _eigenweb_ is a lightweight message relaying system
-  - the _eigenweb_ transfers data packets for atomic swaps
-  - the _eigenweb_ is not a blockchain and has no coin
 - _eigenwallet_ magically syncs itself across different devices using a protocol
   called [_eigensync_](eigensync.html).
-  - _eigensync_ allows you to:
-    - perform blockchain synchronization just once on one device, and then share
-      that wallet state across all your other devices
-    - start a swap on one device and then complete it on another
-    - outsource the expensive blockchain synchronization to a trusted party
-    - outsource the expensive blockchain synchronization to your home server
-  - _eigensync_ uses a _conflict-free replicated data type_^[11] that is split
-    into state packets and stored on multiple devices
-  - _eigensync_ is fully private and anonymous. State packets are encrypted with
-    the users private key
-- _eigenwallet_ can be a Monero node (using cuprate^[12])
+- _eigenwallet_ can be a Monero node (using cuprate^[11])
 
 ## Why "_eigenwallet_"?
 
@@ -188,14 +173,6 @@ https://tpo.pages.torproject.net/core/arti/about/. _"Arti is designed from the
 ground up to work as a modular, embeddable library that other applications can
 use."_
 
-[11]: Wikipedia contributors. "Conflict-free replicated data type." _Wikipedia,
-The Free Encyclopedia_.
-https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type. _"In
-distributed computing, a conflict-free replicated data type (CRDT) is a data
-structure that is replicated across multiple computers in a network, with the
-following features: The application can update any replica independently,
-concurrently and without coordinating with other replicas."_
-
-[12]: Cuprate. "Cuprate: An upcoming experimental, modern, and secure Monero
+[11]: Cuprate. "Cuprate: An upcoming experimental, modern, and secure Monero
 node." https://cuprate.org/. _"Discover the documentation of our Rust-written
 project, as well as documentation on monerod and the Monero protocol."_

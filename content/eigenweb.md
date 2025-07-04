@@ -1,12 +1,14 @@
 ## What is the _eigenweb_?
 
-- The _eigenweb_ is a message relaying system. Its participants are the users of
-  the _eigenwallet_.
-- It stores and relays data packets. Not all data packets are created equal.
-  Some are stored for just a few hours, others might be stored for months.
-- Storage is an expensive good. The amount of storage any given _eigenwallet_
-  allocates for data packets from a specific other _eigenwallet_ user depends on
-  the _trust score_ it computes for that user.
+- It's is a lightweight message relaying system
+- It's is not a blockchain and has no coin
+- It transfers data packets from _A_ to _B_
+- it assigns a local trust score to each _peer_ using the _eigentrust_
+  system^[9]
+- Not all data packets are created equal. Some are stored for just a few hours,
+  others might be stored for months.
+- The amount of storage any given _eigenwallet_ allocates for data packets from
+  a specific other _eigenwallet_ user depends on its _trust score_.
 
 ## How does _eigentrust_ work?
 
