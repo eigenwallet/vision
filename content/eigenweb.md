@@ -4,6 +4,8 @@
 - It stores and relays data packets. Not all data packets are created equal. Some are stored for just a few hours, others might be stored for months.
 - Storage is an expensive good. The amount of storage any given _eigenwallet_ allocates for data packets from a specific other _eigenwallet_ user depends on the _trust score_ it computes for that user.
 
+## How does _eigentrust_ work?
+
 The _trust score_ is computed using the _eigentrust_ algorithm. It operates under the basic principle of "I extend trust to those who are trusted by people I already trust". As more trust is gained in a relationship between two _eigenwallets_, the storage capacity increases.
 
 The users of the _eignewallet_ can manually add other users they know to be fairly trustworthy. These can be users that are well known in the community or someone the user knows personally.
