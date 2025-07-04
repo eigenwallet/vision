@@ -1,14 +1,18 @@
 # Build System for Markdown to LaTeX-style HTML
 
-This build system converts Markdown files to HTML with LaTeX-style formatting using the existing LaTeX CSS framework. The build system is written in TypeScript for better type safety and developer experience.
+This build system converts Markdown files to HTML with LaTeX-style formatting
+using the existing LaTeX CSS framework. The build system is written in
+TypeScript for better type safety and developer experience.
 
 ## Files
 
 ### Content Files
+
 - `content/*.md` - Source markdown files (automatically discovered)
 - `dist/*.html` - Generated HTML outputs (not committed to git)
 
 ### Build System Files
+
 - `builder/build.ts` - TypeScript build script that converts markdown to HTML
 - `builder/test.ts` - TypeScript test script to verify the build system
 - `tsconfig.json` - TypeScript configuration
@@ -16,25 +20,31 @@ This build system converts Markdown files to HTML with LaTeX-style formatting us
 ## Usage
 
 ### Build once
+
 ```bash
 npm run build:md
 ```
 
 ### Watch for changes (development mode)
+
 ```bash
 npm run watch
 ```
 
 ### Test the build system
+
 ```bash
 npm run test
 ```
 
 ## Features
 
-- **Automatic file discovery**: Automatically finds and builds all `.md` files in the content directory
-- **Clean TypeScript implementation**: Pure TypeScript with proper type safety and developer experience
-- **Organized structure**: Separates content from build tools for better maintainability
+- **Automatic file discovery**: Automatically finds and builds all `.md` files
+  in the content directory
+- **Clean TypeScript implementation**: Pure TypeScript with proper type safety
+  and developer experience
+- **Organized structure**: Separates content from build tools for better
+  maintainability
 - **Markdown to HTML conversion**: Uses the `marked` library for parsing
 - **Footnote support**: Converts `^[1]` references to proper HTML footnotes
 - **Math expression preservation**: Keeps LaTeX math expressions for MathJax
@@ -44,14 +54,18 @@ npm run test
 - **Comprehensive testing**: Full test suite to verify functionality
 - **Abstract extraction**: Properly separates abstract content from main content
 - **Error handling**: Robust error handling with proper exit codes
-- **Multiple pages**: Supports building multiple markdown files to separate HTML pages
+- **Multiple pages**: Supports building multiple markdown files to separate HTML
+  pages
 
 ## How it works
 
 1. **Markdown parsing**: The `marked` library converts markdown to HTML
-2. **Footnote processing**: Post-processes the HTML to convert `^[1]` to proper footnote links
-3. **Content separation**: Extracts abstract content and removes duplicates from main content
-4. **Reference section**: Converts the References section to a proper footnotes div
+2. **Footnote processing**: Post-processes the HTML to convert `^[1]` to proper
+   footnote links
+3. **Content separation**: Extracts abstract content and removes duplicates from
+   main content
+4. **Reference section**: Converts the References section to a proper footnotes
+   div
 5. **HTML template**: Wraps the generated content in the original HTML structure
 6. **Asset linking**: Preserves links to LaTeX CSS, MathJax, and other assets
 
@@ -103,9 +117,13 @@ vision/
 To modify the build process:
 
 1. Edit `builder/build.ts` to change the conversion logic
-2. Add new `.md` files to the `content/` directory (they will be automatically discovered)
+2. Add new `.md` files to the `content/` directory (they will be automatically
+   discovered)
 3. Update existing markdown files to modify content
 4. Run `npm run build:md` to rebuild all pages
 5. Run `npm run test` to verify the changes
 
-The build system automatically discovers all `.md` files in the content directory and generates corresponding HTML files in the dist directory. The generated HTML maintains the same styling and functionality as the original design.
+The build system automatically discovers all `.md` files in the content
+directory and generates corresponding HTML files in the dist directory. The
+generated HTML maintains the same styling and functionality as the original
+design.

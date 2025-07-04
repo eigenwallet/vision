@@ -7,7 +7,7 @@
 */
 
 :root {
-  --bg-color: #F0F0F0;
+  --bg-color: #f0f0f0;
   --color: black;
   --token-teal: #407f80;
   --token-black: #000000;
@@ -18,38 +18,38 @@
   --token-red: #ba2121;
   --token-fuchsia: #dd4a68;
   --token-orange: #e90;
-  --token-pink: #BA6687;
+  --token-pink: #ba6687;
 }
 
 .latex-dark {
   --bg-color: #2d2d2d;
   --color: #ccc;
-  --token-teal: #90D0D0;
+  --token-teal: #90d0d0;
   --token-black: #ccc;
   --token-grey: #999;
-  --token-green: #51B53F;
-  --token-lime: #B4C55D;
-  --token-brown: #D3A26B;
-  --token-red: #FA5E4F;
-  --token-fuchsia: #FF839B;
-  --token-orange: #FFCF4C;
-  --token-pink: #F49BBC;
+  --token-green: #51b53f;
+  --token-lime: #b4c55d;
+  --token-brown: #d3a26b;
+  --token-red: #fa5e4f;
+  --token-fuchsia: #ff839b;
+  --token-orange: #ffcf4c;
+  --token-pink: #f49bbc;
 }
 
 @media (prefers-color-scheme: dark) {
   .latex-dark-auto {
     --bg-color: #2d2d2d;
     --color: #ccc;
-    --token-teal: #90D0D0;
+    --token-teal: #90d0d0;
     --token-black: #ccc;
     --token-grey: #999;
-    --token-green: #51B53F;
-    --token-lime: #B4C55D;
-    --token-brown: #D3A26B;
-    --token-red: #FA5E4F;
-    --token-fuchsia: #FF839B;
-    --token-orange: #FFCF4C;
-    --token-pink: #F49BBC;
+    --token-green: #51b53f;
+    --token-lime: #b4c55d;
+    --token-brown: #d3a26b;
+    --token-red: #fa5e4f;
+    --token-fuchsia: #ff839b;
+    --token-orange: #ffcf4c;
+    --token-pink: #f49bbc;
   }
 }
 
@@ -73,7 +73,6 @@ pre[class*='language-'] {
   -ms-hyphens: none;
   hyphens: none;
 }
-
 
 /* Code blocks */
 pre[class*='language-'] {

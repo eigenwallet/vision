@@ -25,7 +25,7 @@ marked.setOptions({
   silent: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false
+  xhtml: false,
 });
 
 /**
@@ -46,13 +46,13 @@ function readMarkdownFile(filePath: string): string {
 function processInternalLinks(content: string): string {
   // Convert markdown links to other .md files to .html
   content = content.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
-  
+
   // Support [[page]] syntax for easy linking
   content = content.replace(/\[\[([^\]]+)\]\]/g, (match, pageName) => {
     const fileName = pageName.toLowerCase().replace(/\s+/g, '-');
     return `<a href="${fileName}.html">${pageName}</a>`;
   });
-  
+
   return content;
 }
 
@@ -61,13 +61,16 @@ function processInternalLinks(content: string): string {
  */
 function convertMarkdownToHtml(markdown: string): string {
   let htmlContent = marked(markdown);
-  
+
   // Post-process to handle footnotes
-  htmlContent = htmlContent.replace(/\^\[(\d+)\]/g, '<sup><a href="#fn$1" id="ref$1">$1</a></sup>');
-  
+  htmlContent = htmlContent.replace(
+    /\^\[(\d+)\]/g,
+    '<sup><a href="#fn$1" id="ref$1">$1</a></sup>'
+  );
+
   // Process internal links
   htmlContent = processInternalLinks(htmlContent);
-  
+
   return htmlContent;
 }
 
@@ -85,26 +88,31 @@ function processFootnotes(content: string): string {
   const referencesText = referencesMatch[1];
   const footnoteRegex = /<p>\[(\d+)\]: ([\s\S]*?)<\/p>/g;
   let footnotes = '<div class="footnotes">\n';
-  
+
   let match: RegExpExecArray | null;
   while ((match = footnoteRegex.exec(referencesText)) !== null) {
     const footnote: FootnoteMatch = {
       num: match[1],
-      content: match[2].trim()
+      content: match[2].trim(),
     };
     footnotes += `  <p id="fn${footnote.num}">\n    ${footnote.num}. ${footnote.content}\n    <a href="#ref${footnote.num}" title="Jump back to footnote ${footnote.num} in the text.">↩</a>\n  </p>\n`;
   }
   footnotes += '</div>';
-  
+
   return content.replace(referencesRegex, footnotes);
 }
 
 /**
  * Extract abstract content and clean main content
  */
-function extractAbstractAndMainContent(content: string): { abstract: string; main: string } {
-  const abstractMatch = content.match(/<h2>Abstract<\/h2>\s*<p><strong><em>eigenwallet<\/em><\/strong> (.*?)<\/p>\s*<p>(.*?)<\/p>\s*<p><a href="(.*?)">(.*?)<\/a><\/p>/s);
-  
+function extractAbstractAndMainContent(content: string): {
+  abstract: string;
+  main: string;
+} {
+  const abstractMatch = content.match(
+    /<h2>Abstract<\/h2>\s*<p><strong><em>eigenwallet<\/em><\/strong> (.*?)<\/p>\s*<p>(.*?)<\/p>\s*<p><a href="(.*?)">(.*?)<\/a><\/p>/s
+  );
+
   let abstractContent = '';
   let mainContent = content;
 
@@ -113,16 +121,22 @@ function extractAbstractAndMainContent(content: string): { abstract: string; mai
       content: abstractMatch[1],
       previousText: abstractMatch[2],
       link: abstractMatch[3],
-      linkText: abstractMatch[4]
+      linkText: abstractMatch[4],
     };
-    
+
     abstractContent = `<p><strong><em>eigenwallet</em></strong> ${abstract.content}<br>${abstract.previousText}<br><a href="${abstract.link}">${abstract.linkText}</a>.</p>`;
-    
+
     // Remove the abstract section from the main content
-    mainContent = content.replace(/<h1><strong>eigenwallet<\/strong><\/h1>\s*<h2>Abstract<\/h2>\s*<p>.*?<\/p>\s*<p>.*?<\/p>\s*<p><a href=".*?">.*?<\/a><\/p>\s*<hr>/s, '');
+    mainContent = content.replace(
+      /<h1><strong>eigenwallet<\/strong><\/h1>\s*<h2>Abstract<\/h2>\s*<p>.*?<\/p>\s*<p>.*?<\/p>\s*<p><a href=".*?">.*?<\/a><\/p>\s*<hr>/s,
+      ''
+    );
   } else {
     // For pages without abstract, remove any standalone h1 title at the beginning
-    mainContent = content.replace(/^<h1><strong>eigenwallet<\/strong><\/h1>\s*/, '');
+    mainContent = content.replace(
+      /^<h1><strong>eigenwallet<\/strong><\/h1>\s*/,
+      ''
+    );
   }
 
   return { abstract: abstractContent, main: mainContent };
@@ -131,12 +145,17 @@ function extractAbstractAndMainContent(content: string): { abstract: string; mai
 /**
  * Generate complete HTML document
  */
-function generateHtmlDocument(abstractContent: string, mainContent: string): string {
-  const abstractSection = abstractContent ? `
+function generateHtmlDocument(
+  abstractContent: string,
+  mainContent: string
+): string {
+  const abstractSection = abstractContent
+    ? `
   <div class="abstract">
     <h2>Abstract</h2>
     ${abstractContent}
-  </div>` : '';
+  </div>`
+    : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -153,8 +172,10 @@ function generateHtmlDocument(abstractContent: string, mainContent: string): str
 
 <body id="top" class="text-justify">
   <header style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
-    <h1 style="font-size: 2em; margin-bottom: 0.5rem;"><strong>eigenwallet</strong></h1>
-    <img src="imgs/icon.png" alt="eigenwallet logo" style="width: 2em; height: 2em;" />
+    <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+      <h1 style="font-size: 2em; margin-bottom: 0.5rem;"><strong>eigenwallet</strong></h1>
+      <img src="imgs/icon.png" alt="eigenwallet logo" style="width: 2em; height: 2em;" />
+    </a>
   </header>
 ${abstractSection}
 
@@ -183,7 +204,11 @@ ${abstractSection}
 /**
  * Write HTML content to file
  */
-function writeHtmlFile(content: string, outputPath: string, inputPath: string): void {
+function writeHtmlFile(
+  content: string,
+  outputPath: string,
+  inputPath: string
+): void {
   try {
     fs.writeFileSync(outputPath, content);
     console.log(`Successfully generated ${outputPath} from ${inputPath}`);
@@ -237,7 +262,8 @@ function discoverMarkdownFiles(): string[] {
  */
 function getOutputPath(inputPath: string): string {
   const fileName = path.basename(inputPath, '.md');
-  const outputFileName = fileName === 'index' ? 'index.html' : `${fileName}.html`;
+  const outputFileName =
+    fileName === 'index' ? 'index.html' : `${fileName}.html`;
   return path.join('dist', outputFileName);
 }
 
@@ -254,11 +280,11 @@ function copyStaticAssets(): void {
       if (fs.existsSync(destDir)) {
         fs.rmSync(destDir, { recursive: true, force: true });
       }
-      
+
       // Copy directory but skip if it's trying to copy into itself
       const srcPath = path.resolve(dir);
       const destPath = path.resolve(destDir);
-      
+
       if (!destPath.startsWith(srcPath)) {
         fs.cpSync(dir, destDir, { recursive: true });
         console.log(`Copied ${dir}/ to dist/${dir}/`);
@@ -289,7 +315,7 @@ function main(): void {
 
   // Discover all markdown files
   const markdownFiles = discoverMarkdownFiles();
-  
+
   if (markdownFiles.length === 0) {
     console.log('No markdown files found in content directory');
     return;

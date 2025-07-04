@@ -3,7 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![latex.css on NPM](https://img.shields.io/npm/v/latex.css.svg?color=green&label=latex.css)](https://www.npmjs.com/package/latex.css)
 
-> LaTeX.css is a minimal, almost class-less CSS library which makes any website look like a LaTeX document. It is based on @davidrzs' [latexCSS](https://github.com/davidrzs/latexcss).
+> LaTeX.css is a minimal, almost class-less CSS library which makes any website
+> look like a LaTeX document. It is based on @davidrzs'
+> [latexCSS](https://github.com/davidrzs/latexcss).
 
 ## Getting Started
 
@@ -35,11 +37,15 @@ Yarn:
 yarn add latex.css
 ```
 
-Add any optional classnames to elements with special styles (author subtitle, abstract, lemmas, theorems, etc.). A list of supported class-based elements can be found [here](https://latex.vercel.app/#class-based-elements).
+Add any optional classnames to elements with special styles (author subtitle,
+abstract, lemmas, theorems, etc.). A list of supported class-based elements can
+be found [here](https://latex.vercel.app/#class-based-elements).
 
 ## Languages
 
-The labels of theorems, definitions, lemmas and proofs can be changed to other [supported languages](lang) by including the following snippet in addition to the main CSS file.
+The labels of theorems, definitions, lemmas and proofs can be changed to other
+[supported languages](lang) by including the following snippet in addition to
+the main CSS file.
 
 ```html
 <link rel="stylesheet" href="https://latex.vercel.app/lang/es.css" />
@@ -48,24 +54,30 @@ The labels of theorems, definitions, lemmas and proofs can be changed to other [
 and changing the html `lang` attribute:
 
 ```html
-<html lang="es">
+<html lang="es"></html>
 ```
 
-Have a look at the [language support page](https://latex.vercel.app/languages) for more info and a demo of the different languages.
+Have a look at the [language support page](https://latex.vercel.app/languages)
+for more info and a demo of the different languages.
 
 ## Contributing
 
-Contributions, feedback and issues are welcome. Feel free to fork, comment, critique, or submit a pull request.
+Contributions, feedback and issues are welcome. Feel free to fork, comment,
+critique, or submit a pull request.
 
 ## Acknowledgements
 
-This project is based on David Zollikofer's project [latexCSS](https://github.com/davidrzs/latexcss).
+This project is based on David Zollikofer's project
+[latexCSS](https://github.com/davidrzs/latexcss).
 
-Most of the CSS reset is based on Andy Bell's [Modern CSS Reset](https://hankchizljaw.com/wrote/a-modern-css-reset/).
+Most of the CSS reset is based on Andy Bell's
+[Modern CSS Reset](https://hankchizljaw.com/wrote/a-modern-css-reset/).
 
-The sample [HTML5 markup test page](https://latex.vercel.app/elements) is based on [html5-test-page](https://github.com/cbracco/html5-test-page) by @cbracco.
+The sample [HTML5 markup test page](https://latex.vercel.app/elements) is based
+on [html5-test-page](https://github.com/cbracco/html5-test-page) by @cbracco.
 
-The idea of sidenotes was taken and adpated from [Tufte CSS](https://edwardtufte.github.io/tufte-css/).
+The idea of sidenotes was taken and adpated from
+[Tufte CSS](https://edwardtufte.github.io/tufte-css/).
 
 ## License
 
