@@ -1,11 +1,9 @@
 ## What is _eigensync_?
 
 - It's a protocol developed just for the _eigenwallet_.
-- It synchronizes that state across different devices with the same seed.
-- It uses a _conflict-free replicated data structure_^[1] that is split into
-  state packets and stored on multiple devices
-- It is fully private and anonymous. State packets are encrypted with the users
-  private key
+- It synchronizes state across different devices with the same wallet seed.
+- It stores state in a _conflict-free replicated data structure_^[1] which is stored in the cloud. It guarantees eventual consistency.
+- It is private and anonymous. All data is encrypted with the users private key.
 
 ## What can it do?
 

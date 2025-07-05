@@ -142,7 +142,6 @@ financing requirements that significantly impact the regulatory environment for
 privacy-focused cryptocurrencies and the exchanges that handle them.
 
 [8]: BitInfoCharts. 'Monero, Zcash Market Capitalization historical chart.'
-
 https://bitinfocharts.com/comparison/marketcap-xmr-zec.html. Market
 capitalization data demonstrates Monero's significantly higher market valuation
 compared to other major privacy-focused cryptocurrencies, indicating stronger

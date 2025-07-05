@@ -88,8 +88,8 @@ function processFootnotes(content: string): string {
 
   const referencesText = referencesMatch[1];
   
-  // Extract all footnote definitions
-  const footnoteRegex = /<p>\[(\d+)\]:\s*([\s\S]*?)(?=<p>\[(?:\d+)\]:|$)/g;
+  // More robust regex to extract footnote definitions
+  const footnoteRegex = /<p>\[(\d+)\]:\s*([\s\S]*?)(?=<\/p>\s*<p>\[(?:\d+)\]:|<\/p>\s*$)/g;
   let footnotes = '<div class="footnotes">\n';
   
   let match: RegExpExecArray | null;
