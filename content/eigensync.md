@@ -2,7 +2,8 @@
 
 - It's a protocol developed just for the _eigenwallet_.
 - It synchronizes state across different devices with the same wallet seed.
-- It stores state in a _conflict-free replicated data structure_^[1] which is stored in the cloud. It guarantees eventual consistency.
+- It stores state in a _conflict-free replicated data structure_^[1] which is
+  stored in the cloud. It guarantees eventual consistency.
 - It is private and anonymous. All data is encrypted with the users private key.
 
 ## What can it do?

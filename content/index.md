@@ -28,7 +28,13 @@ all.
   [_eigenweb_](eigenweb.html).
 - _eigenwallet_ magically syncs itself across different devices using a protocol
   called [_eigensync_](eigensync.html).
-- _eigenwallet_ can be a Monero node (using cuprate^[10])
+
+**_eigenwallet_** shares a tech stack with upcoming Monero tech (Rust + Libp2p).
+It's perfectly positioned to integrate these in the future:
+
+- _eigenwallet_ will be a Monero node (using cuprate^[10])
+- _eigenwallet_ will bring its users access to Serai DEX^[12]
+- _eigenwallet_ can bring payment channels to life (using grease-xmr^[11])
 
 ## Why "_eigenwallet_"?
 
@@ -103,9 +109,18 @@ Technical Guide to a Private Digital Currency; for Beginners, Amateurs, and
 Experts." https://www.getmonero.org/library/Zero-to-Monero-2-0-0.pdf. April
 4, 2020.
 
-[3]: kayabaNerve. 'Full-Chain Membership Proofs + Spend Authorization + Linkability.' https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86. _"This proposes an extension to FCMPs to make them a drop-in replacement for the existing CLSAG. In order to be such a replacement, the proof must handle membership (inherent to FCMPs), spend authorization, and linkability."_
+[3]: kayabaNerve. 'Full-Chain Membership Proofs + Spend Authorization +
+Linkability.'
+https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86. _"This
+proposes an extension to FCMPs to make them a drop-in replacement for the
+existing CLSAG. In order to be such a replacement, the proof must handle
+membership (inherent to FCMPs), spend authorization, and linkability."_
 
-[4]: BitInfoCharts. 'Monero, Zcash Transactions historical chart - Number of transactions in blockchain per day.' https://bitinfocharts.com/comparison/transactions-xmr-zec.html. Historical transaction data demonstrating Monero's significantly higher daily transaction volume compared to other privacy-focused cryptocurrencies.
+[4]: BitInfoCharts. 'Monero, Zcash Transactions historical chart - Number of
+transactions in blockchain per day.'
+https://bitinfocharts.com/comparison/transactions-xmr-zec.html. Historical
+transaction data demonstrating Monero's significantly higher daily transaction
+volume compared to other privacy-focused cryptocurrencies.
 
 [5]: Chainalysis Team. "Darknet market and fraud shop BTC revenues decline amid
 years-long international law enforcement disruption."
@@ -142,6 +157,7 @@ financing requirements that significantly impact the regulatory environment for
 privacy-focused cryptocurrencies and the exchanges that handle them.
 
 [8]: BitInfoCharts. 'Monero, Zcash Market Capitalization historical chart.'
+
 https://bitinfocharts.com/comparison/marketcap-xmr-zec.html. Market
 capitalization data demonstrates Monero's significantly higher market valuation
 compared to other major privacy-focused cryptocurrencies, indicating stronger
@@ -155,3 +171,8 @@ use."_
 [10]: Cuprate. "Cuprate: An upcoming experimental, modern, and secure Monero
 node." https://cuprate.org/. _"Discover the documentation of our Rust-written
 project, as well as documentation on monerod and the Monero protocol."_
+
+[11]: grease-xmr. "Payment channels for Monero."
+https://github.com/grease-xmr/grease.
+
+[12]: serai-dex. "Serai DEX." https://github.com/serai-dex/serai.

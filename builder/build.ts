@@ -58,13 +58,13 @@ function convertMarkdownToHtml(markdown: string): string {
 
   // Post-process to handle footnotes
   let processedHtml = htmlContent;
-  
+
   // First, handle normal footnotes with ^[number] format
   processedHtml = processedHtml.replace(
     /\^\[(\d+)\]/g,
     '<sup><a href="#fn$1" id="ref$1">$1</a></sup>'
   );
-  
+
   // Then, handle footnotes that were converted to links by marked
   processedHtml = processedHtml.replace(
     /\^<a href="[^"]*" title="[^"]*">(\d+)<\/a>/g,
@@ -87,22 +87,23 @@ function processFootnotes(content: string): string {
   }
 
   const referencesText = referencesMatch[1];
-  
+
   // More robust regex to extract footnote definitions
-  const footnoteRegex = /<p>\[(\d+)\]:\s*([\s\S]*?)(?=<\/p>\s*<p>\[(?:\d+)\]:|<\/p>\s*$)/g;
+  const footnoteRegex =
+    /<p>\[(\d+)\]:\s*([\s\S]*?)(?=<\/p>\s*<p>\[(?:\d+)\]:|<\/p>\s*$)/g;
   let footnotes = '<div class="footnotes">\n';
-  
+
   let match: RegExpExecArray | null;
   while ((match = footnoteRegex.exec(referencesText)) !== null) {
     const footnoteNum = match[1];
     let footnoteContent = match[2];
-    
+
     // Clean up the HTML and remove closing </p> tags
     footnoteContent = footnoteContent.replace(/<\/p>\s*$/, '').trim();
-    
+
     footnotes += `  <p id="fn${footnoteNum}">\n    ${footnoteNum}. ${footnoteContent}\n    <a href="#ref${footnoteNum}" title="Jump back to footnote ${footnoteNum} in the text.">↩</a>\n  </p>\n`;
   }
-  
+
   footnotes += '</div>';
   return content.replace(referencesRegex, footnotes);
 }
@@ -164,7 +165,7 @@ function generateHtmlDocument(
     : '';
 
   const isIndexPage = fileName === 'index.html';
-  const backButton = !isIndexPage 
+  const backButton = !isIndexPage
     ? `<a href="index.html" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); text-decoration: none; font-size: 1.5em; color: inherit; padding: 0.5rem;">&lt;</a>`
     : '';
 
