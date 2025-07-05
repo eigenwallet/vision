@@ -21,14 +21,14 @@ all.
 - _eigenwallet_ is a battle-tested ($>3$ years) Monero $\leftrightarrow$ Bitcoin
   atomic swap implementation
 - _eigenwallet_ provides network privacy with its first-class Tor support (using
-  arti^[10])
+  arti^[9])
 - _eigenwallet_ is platform-agnostic and works on Windows, Linux, macOS, iOS and
   Android
 - _eigenwallets_ form a peer-to-peer network between its users which we call the
   [_eigenweb_](eigenweb.html).
 - _eigenwallet_ magically syncs itself across different devices using a protocol
   called [_eigensync_](eigensync.html).
-- _eigenwallet_ can be a Monero node (using cuprate^[11])
+- _eigenwallet_ can be a Monero node (using cuprate^[10])
 
 ## Why "_eigenwallet_"?
 
@@ -70,7 +70,7 @@ choice because it:
   possible anonymity set^[4]
 - has gained widespread adoption in circles where privacy is paramount^[5]
 - has been chosen most valuable by the market^[8]
-- has shown to be eager and willing to adopt new technology (e.g FCMP++)^[3]
+- has shown to be eager and willing to adopt new technology (eg FCMP++)^[3]
 
 **(5)** Monero is under constant attack. It lives under the constant threat of
 delistings. It is not unreasonable to assume that it will be banned from most
@@ -103,24 +103,9 @@ Technical Guide to a Private Digital Currency; for Beginners, Amateurs, and
 Experts." https://www.getmonero.org/library/Zero-to-Monero-2-0-0.pdf. April
 4, 2020.
 
-[3]:
-  kayabaNerve.
-  'Full-Chain Membership Proofs + Spend Authorization +
-Linkability.'
+[3]: kayabaNerve. 'Full-Chain Membership Proofs + Spend Authorization + Linkability.' https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86. _"This proposes an extension to FCMPs to make them a drop-in replacement for the existing CLSAG. In order to be such a replacement, the proof must handle membership (inherent to FCMPs), spend authorization, and linkability."_
 
-https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86. _"This
-proposes an extension to FCMPs to make them a drop-in replacement for the
-existing CLSAG. In order to be such a replacement, the proof must handle
-membership (inherent to FCMPs), spend authorization, and linkability."_
-
-[4]:
-  BitInfoCharts.
-  'Monero, Zcash Transactions historical chart - Number of
-transactions in blockchain per day.'
-
-https://bitinfocharts.com/comparison/transactions-xmr-zec.html. Historical
-transaction data demonstrating Monero's significantly higher daily transaction
-volume compared to other privacy-focused cryptocurrencies.
+[4]: BitInfoCharts. 'Monero, Zcash Transactions historical chart - Number of transactions in blockchain per day.' https://bitinfocharts.com/comparison/transactions-xmr-zec.html. Historical transaction data demonstrating Monero's significantly higher daily transaction volume compared to other privacy-focused cryptocurrencies.
 
 [5]: Chainalysis Team. "Darknet market and fraud shop BTC revenues decline amid
 years-long international law enforcement disruption."
@@ -163,16 +148,11 @@ capitalization data demonstrates Monero's significantly higher market valuation
 compared to other major privacy-focused cryptocurrencies, indicating stronger
 market confidence and adoption.
 
-[9]: Kamvar, Sepandar D., Mario T. Schlosser, and Hector Garcia-Molina. "The
-EigenTrust Algorithm for Reputation Management in P2P Networks." _Proceedings of
-the 11th International Conference on World Wide Web_, 2003.
-https://nlp.stanford.edu/pubs/eigentrust.pdf.
-
-[10]: The Tor Project. "Arti: A Tor implementation in Rust."
+[9]: The Tor Project. "Arti: A Tor implementation in Rust."
 https://tpo.pages.torproject.net/core/arti/about/. _"Arti is designed from the
 ground up to work as a modular, embeddable library that other applications can
 use."_
 
-[11]: Cuprate. "Cuprate: An upcoming experimental, modern, and secure Monero
+[10]: Cuprate. "Cuprate: An upcoming experimental, modern, and secure Monero
 node." https://cuprate.org/. _"Discover the documentation of our Rust-written
 project, as well as documentation on monerod and the Monero protocol."_

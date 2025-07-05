@@ -4,7 +4,7 @@
 - It's a lightweight message relaying and buffering system
 - It allows for asynchronous communication
 - It assigns a local trust score to each _peer_ using the _eigentrust_
-  system^[9]
+  system^[1]
 - The amount of storage any given _eigenwallet_ allocates for data packets from
   a specific other _eigenwallet_ user depends on its _trust score_.
 
@@ -16,7 +16,7 @@
   a coffee down the street. She is not online to receive messages.
   
   Bob stores the _transfer proof_ in the _eigenweb_. When Alice comes back she gets
-  the _trasnfer proof_ from the _eigenweb_ and sends Bob the key to redeem the Bitcoin.
+  the _transfer proof_ from the _eigenweb_ and sends Bob the key to redeem the Bitcoin.
   
 - Alice wants to swap her Bitcoin for Monero. She wants to minimize the probability of the other party not locking their Monero. This would force her to do a refund which will cost her around 1$ in fees.
   
@@ -43,3 +43,10 @@ kilobytes).
 Data packets are fully end-to-end encrypted. All connections in the _eigenweb_
 operate _within_ the Tor network. Connections never reach an _exit node_. Each user gets theirs own _hidden service_.
 Inbound and outbound connections are therefore fully anonymous.
+
+## References
+
+[1]: Kamvar, Sepandar D., Mario T. Schlosser, and Hector Garcia-Molina. "The
+EigenTrust Algorithm for Reputation Management in P2P Networks." _Proceedings of
+the 11th International Conference on World Wide Web_, 2003.
+https://nlp.stanford.edu/pubs/eigentrust.pdf.

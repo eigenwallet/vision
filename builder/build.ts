@@ -18,14 +18,8 @@ interface AbstractMatch {
 marked.setOptions({
   breaks: false,
   gfm: true,
-  headerIds: true,
-  mangle: false,
   pedantic: false,
-  sanitize: false,
   silent: false,
-  smartLists: true,
-  smartypants: false,
-  xhtml: false,
 });
 
 /**
@@ -60,25 +54,32 @@ function processInternalLinks(content: string): string {
  * Convert markdown to HTML and post-process footnotes
  */
 function convertMarkdownToHtml(markdown: string): string {
-  let htmlContent = marked(markdown);
+  const htmlContent = marked(markdown) as string;
 
   // Post-process to handle footnotes
-  htmlContent = htmlContent.replace(
+  let processedHtml = htmlContent;
+  
+  // First, handle normal footnotes with ^[number] format
+  processedHtml = processedHtml.replace(
     /\^\[(\d+)\]/g,
+    '<sup><a href="#fn$1" id="ref$1">$1</a></sup>'
+  );
+  
+  // Then, handle footnotes that were converted to links by marked
+  processedHtml = processedHtml.replace(
+    /\^<a href="[^"]*" title="[^"]*">(\d+)<\/a>/g,
     '<sup><a href="#fn$1" id="ref$1">$1</a></sup>'
   );
 
   // Process internal links
-  htmlContent = processInternalLinks(htmlContent);
-
-  return htmlContent;
+  return processInternalLinks(processedHtml);
 }
 
 /**
  * Process footnotes from the references section
  */
 function processFootnotes(content: string): string {
-  const referencesRegex = /<h2>References<\/h2>\n([\s\S]*?)$/;
+  const referencesRegex = /<h2>References<\/h2>\s*([\s\S]*?)$/;
   const referencesMatch = content.match(referencesRegex);
 
   if (!referencesMatch) {
@@ -86,19 +87,23 @@ function processFootnotes(content: string): string {
   }
 
   const referencesText = referencesMatch[1];
-  const footnoteRegex = /<p>\[(\d+)\]: ([\s\S]*?)<\/p>/g;
+  
+  // Extract all footnote definitions
+  const footnoteRegex = /<p>\[(\d+)\]:\s*([\s\S]*?)(?=<p>\[(?:\d+)\]:|$)/g;
   let footnotes = '<div class="footnotes">\n';
-
+  
   let match: RegExpExecArray | null;
   while ((match = footnoteRegex.exec(referencesText)) !== null) {
-    const footnote: FootnoteMatch = {
-      num: match[1],
-      content: match[2].trim(),
-    };
-    footnotes += `  <p id="fn${footnote.num}">\n    ${footnote.num}. ${footnote.content}\n    <a href="#ref${footnote.num}" title="Jump back to footnote ${footnote.num} in the text.">↩</a>\n  </p>\n`;
+    const footnoteNum = match[1];
+    let footnoteContent = match[2];
+    
+    // Clean up the HTML and remove closing </p> tags
+    footnoteContent = footnoteContent.replace(/<\/p>\s*$/, '').trim();
+    
+    footnotes += `  <p id="fn${footnoteNum}">\n    ${footnoteNum}. ${footnoteContent}\n    <a href="#ref${footnoteNum}" title="Jump back to footnote ${footnoteNum} in the text.">↩</a>\n  </p>\n`;
   }
+  
   footnotes += '</div>';
-
   return content.replace(referencesRegex, footnotes);
 }
 
