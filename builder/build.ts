@@ -147,7 +147,8 @@ function extractAbstractAndMainContent(content: string): {
  */
 function generateHtmlDocument(
   abstractContent: string,
-  mainContent: string
+  mainContent: string,
+  fileName: string
 ): string {
   const abstractSection = abstractContent
     ? `
@@ -155,6 +156,11 @@ function generateHtmlDocument(
     <h2>Abstract</h2>
     ${abstractContent}
   </div>`
+    : '';
+
+  const isIndexPage = fileName === 'index.html';
+  const backButton = !isIndexPage 
+    ? `<a href="index.html" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); text-decoration: none; font-size: 1.5em; color: inherit; padding: 0.5rem;">&lt;</a>`
     : '';
 
   return `<!DOCTYPE html>
@@ -171,7 +177,8 @@ function generateHtmlDocument(
 </head>
 
 <body id="top" class="text-justify">
-  <header style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+  <header style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.5rem; position: relative; padding: 1rem 0;">
+    ${backButton}
     <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
       <h1 style="font-size: 2em; margin-bottom: 0.5rem;"><strong>eigenwallet</strong></h1>
       <img src="imgs/icon.png" alt="eigenwallet logo" style="width: 2em; height: 2em;" />
@@ -235,7 +242,8 @@ function buildFile(inputPath: string, outputPath: string): void {
   const { abstract, main } = extractAbstractAndMainContent(processedContent);
 
   // Generate complete HTML document
-  const fullHTML = generateHtmlDocument(abstract, main);
+  const outputFileName = path.basename(outputPath);
+  const fullHTML = generateHtmlDocument(abstract, main, outputFileName);
 
   // Write to output file
   writeHtmlFile(fullHTML, outputPath, inputPath);
