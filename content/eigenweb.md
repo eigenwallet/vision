@@ -1,6 +1,5 @@
 ## What is the _eigenweb_?
 
-- It's **not** a blockchain. It has no coin
 - It's a lightweight message relaying and buffering system
 - It allows for asynchronous communication
 - It assigns a local trust score to each _peer_ using the _eigentrust_
