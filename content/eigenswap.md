@@ -13,8 +13,7 @@
     They want to convert their Bitcoin into Monero.
   - _Makers_ run a long running process (we call the _asb_). They offer Monero for sale and in exchange they ask for Bitcoin.
   - _Makers_ run a Tor _hidden service_ which hides their IP address. _Takers_ connect to that _hidden service_ to take them up on their offers.
-- _Makers_ sell slightly above market price (usually 0.5% - 4% above market price). _Makers_ compete with each other to offer the best exchange rate. Due to the strong incentive to profit off the arbitrage, there'll always be enough _makers_ to provide a enough liquidity and markups stay low.
-- _Takers_ can choose to buy Monero at the market price or at a price set by a _maker_.
+- _Makers_ sell slightly above market price (usually 0.5% - 4% above market price). They compete with each other to offer the best exchange rate. Due to the strong incentive to profit off the arbitrage, there'll always be enough _makers_ to provide a enough liquidity and markups stay low.
 - It implements the protocol described in a paper by Philipp Hoenisch and Lucas Soriano del Pino^[1]
 
 
