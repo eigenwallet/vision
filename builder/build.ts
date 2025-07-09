@@ -186,8 +186,7 @@ function generateHtmlDocument(
   <header style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.5rem; position: relative; padding: 1rem 0;">
     ${backButton}
     <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
-      <h1 style="font-size: 2em; margin-bottom: 0.5rem;"><strong>eigenwallet</strong></h1>
-      <img src="imgs/icon.png" alt="eigenwallet logo" style="width: 2em; height: 2em;" />
+      <img src="imgs/icon.svg" alt="eigenwallet logo" style="height: 5em;" />
     </a>
   </header>
 ${abstractSection}
