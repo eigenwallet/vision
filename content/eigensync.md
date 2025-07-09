@@ -12,7 +12,7 @@ It allows us to do cool stuff like:
 
 - Perform blockchain synchronization once on your laptop. Open the same wallet
   on your iPhone. <br>You will immediately see the full wallet balance,
-  compltely skipping the painful sync process.
+  completely skipping the painful sync process.
 - Initiate an _atomic swap_ on your iPhone. Lock your Bitcoin. Resume it later
   on your laptop when the other party has locked their Monero.
 - Restore a Monero wallet after a year of inactivity on a new device. You forgot
