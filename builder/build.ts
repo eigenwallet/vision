@@ -1,6 +1,7 @@
 import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
+import { processDownloadTemplate } from './downloads.js';
 
 interface FootnoteMatch {
   num: string;
@@ -149,6 +150,24 @@ function extractAbstractAndMainContent(content: string): {
 }
 
 /**
+ * Generate navigation component
+ */
+function generateNavigation(currentFileName: string): string {
+  const isVisionPage = currentFileName === 'index.html';
+  const isDownloadPage = currentFileName === 'download.html';
+  
+  const visionStyle = isVisionPage ? 'text-decoration: underline;' : 'text-decoration: none;';
+  const downloadStyle = isDownloadPage ? 'text-decoration: underline;' : 'text-decoration: none;';
+  
+  return `
+  <nav style="text-align: center; margin: 0.25rem 0 0.25rem 0; padding: 0.25rem 0;">
+    <a href="index.html" style="${visionStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Vision</a>
+    <a href="download.html" style="${downloadStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Download</a>
+  </nav>
+  <hr style="margin: 0.5rem 0 2rem 0;" />`;
+}
+
+/**
  * Generate complete HTML document
  */
 function generateHtmlDocument(
@@ -168,6 +187,8 @@ function generateHtmlDocument(
   const backButton = !isIndexPage
     ? `<a href="index.html" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); text-decoration: none; font-size: 1.5em; color: inherit; padding: 0.5rem;">&lt;</a>`
     : '';
+
+  const navigation = generateNavigation(fileName);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -193,7 +214,8 @@ ${abstractSection}
 
   <main>
     <article>
-      <hr style="margin: 2rem 0;" />
+      <hr style="margin: 0.5rem 0;" />
+      ${navigation}
       ${mainContent}
     </article>
   </main>
@@ -233,9 +255,15 @@ function writeHtmlFile(
 /**
  * Build a single markdown file to HTML
  */
-function buildFile(inputPath: string, outputPath: string): void {
+async function buildFile(inputPath: string, outputPath: string): Promise<void> {
   // Read markdown file
-  const markdownContent = readMarkdownFile(inputPath);
+  let markdownContent = readMarkdownFile(inputPath);
+
+  // Special handling for download page
+  const fileName = path.basename(inputPath, '.md');
+  if (fileName === 'download') {
+    markdownContent = await processDownloadTemplate(markdownContent);
+  }
 
   // Convert markdown to HTML
   const htmlContent = convertMarkdownToHtml(markdownContent);
@@ -317,7 +345,7 @@ function copyStaticAssets(): void {
 /**
  * Main build process
  */
-function main(): void {
+async function main(): Promise<void> {
   // Ensure dist directory exists
   if (!fs.existsSync('dist')) {
     fs.mkdirSync('dist', { recursive: true });
@@ -335,15 +363,21 @@ function main(): void {
   }
 
   // Build each markdown file
-  markdownFiles.forEach(inputPath => {
+  const buildPromises = markdownFiles.map(async inputPath => {
     const outputPath = getOutputPath(inputPath);
-    buildFile(inputPath, outputPath);
+    await buildFile(inputPath, outputPath);
   });
+
+  await Promise.all(buildPromises);
+  console.log(`\n🎉 Built ${markdownFiles.length} files successfully!`);
 }
 
 // Run the build process
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  main().catch(error => {
+    console.error('Build failed:', error);
+    process.exit(1);
+  });
 }
 
 export { main as buildMarkdownToHtml };

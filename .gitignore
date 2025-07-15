@@ -2,6 +2,9 @@
 style.min.css
 dist-build
 
+# GitHub API cache for development
+.github-cache.json
+
 #region https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs
 logs
