@@ -28,6 +28,8 @@
   swapped with. She chooses David as both Bob and Charlie have assigned a high
   trust score to him.
 
+- Alice tries to swap her Bitcoin for Monero with Bob. Alice locks her Bitcoin and waits. Bob simply does not lock his Monero. Alice has to wait a few hours to then refund her Bitcoin. She creates a cryptographic proof which others can verify. The proof conclusively shows that Bob did not lock his Monero despite previously having committed to do so. Alice publishes the proof on the _eigenweb_. Other users will now know that Bob is not a trustworthy maker and avoid him in the future.
+
 ## How does _eigentrust_ work?
 
 The _eigentrust_ algorithm operates under the basic principle of:
