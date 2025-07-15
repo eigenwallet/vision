@@ -1,12 +1,12 @@
-### Wallet {{LATEST_VERSION}} (GUI)
+### Wallet {{LATEST_VERSION}}
 
-**Recommended for most users:** Pre-compiled binaries for the eigenwallet GUI.
+**Recommended for most users.** Pre-compiled binaries for the _eigenwallet_ GUI. Allows you to store, send and receive Monero. And to exchange Bitcoin $\rightarrow$ Monero using Atomic Swaps.
 
 {{GUI_TABLE}}
 
-### Developer Tools {{LATEST_VERSION}} (CLI)
+### Developer Tools {{LATEST_VERSION}}
 
-Only recommended for debugging purposes.
+Command-line tools for debugging purposes or to run a a maker (to provide liquidity).
 
 {{CLI_TABLE}}
 
