@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 // API and Repository Configuration
-const GITHUB_API_BASE = 'https://api.github.com/repos/eigenwallet/wallet';
+const GITHUB_API_BASE = 'https://api.github.com/repos/eigenwallet/core';
 const GITHUB_RELEASES_API = `${GITHUB_API_BASE}/releases/latest`;
-const GITHUB_RELEASES_BASE = 'https://github.com/eigenwallet/wallet/releases/download';
-const GITHUB_ARCHIVE_BASE = 'https://github.com/eigenwallet/wallet/archive';
-const SIGNING_KEY_URL = 'https://github.com/eigenwallet/wallet/blob/main/pgp-key.asc';
+const GITHUB_RELEASES_BASE = 'https://github.com/eigenwallet/core/releases/download';
+const GITHUB_ARCHIVE_BASE = 'https://github.com/eigenwallet/core/archive';
+const SIGNING_KEY_URL = 'https://github.com/eigenwallet/core/blob/main/pgp-key.asc';
 
 // Asset Filtering Patterns
 const ASSET_PREFIXES = {

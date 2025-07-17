@@ -7,7 +7,7 @@ for the future.
 
 It was previously known as _UnstoppableSwap_.
 
-https://github.com/eigenwallet/wallet
+https://github.com/eigenwallet/core
 
 ---
 

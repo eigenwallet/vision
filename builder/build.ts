@@ -163,7 +163,7 @@ function generateNavigation(currentFileName: string): string {
   <nav style="text-align: center; margin: 0.25rem 0 0.25rem 0; padding: 0.25rem 0;">
     <a href="index.html" style="${visionStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Vision</a>
     <a href="download.html" style="${downloadStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Download</a>
-    <a href="https://github.com/eigenwallet/wallet" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem; font-weight: 500;">GitHub</a>
+    <a href="https://github.com/eigenwallet/core" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem; font-weight: 500;">GitHub</a>
   </nav>
   <hr style="margin: 0.5rem 0 2rem 0;" />`;
 }
