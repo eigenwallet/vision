@@ -2,6 +2,7 @@ import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
 import { processDownloadTemplate } from './downloads.js';
+import { processStatsTemplate } from './statistics.js';
 
 interface FootnoteMatch {
   num: string;
@@ -147,14 +148,17 @@ function extractAbstractAndMainContent(content: string): {
 function generateNavigation(currentFileName: string): string {
   const isVisionPage = currentFileName === 'index.html';
   const isDownloadPage = currentFileName === 'download.html';
+  const isStatsPage = currentFileName === 'statistics.html';
   
   const visionStyle = isVisionPage ? 'text-decoration: underline;' : 'text-decoration: none;';
   const downloadStyle = isDownloadPage ? 'text-decoration: underline;' : 'text-decoration: none;';
+  const statsStyle = isStatsPage ? 'text-decoration: underline;' : 'text-decoration: none;';
   
   return `
   <nav style="text-align: center; margin: 0.25rem 0 0.25rem 0; padding: 0.25rem 0;">
     <a href="index.html" style="${visionStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Vision</a>
     <a href="download.html" style="${downloadStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Download</a>
+    <a href="statistics.html" style="${statsStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Statistics</a>
     <a href="https://github.com/eigenwallet/core" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem; font-weight: 500;">GitHub</a>
   </nav>
   <hr style="margin: 0.5rem 0 2rem 0;" />`;
@@ -259,7 +263,12 @@ async function buildFile(inputPath: string, outputPath: string): Promise<void> {
   }
 
   // Convert markdown to HTML
-  const htmlContent = convertMarkdownToHtml(markdownContent);
+  let htmlContent = convertMarkdownToHtml(markdownContent);
+
+  // Special handling for statistics page (after markdown conversion to avoid SVG escaping)
+  if (fileName === 'statistics') {
+    htmlContent = await processStatsTemplate(htmlContent);
+  }
 
   // Process footnotes
   const processedContent = processFootnotes(htmlContent);
