@@ -1,9 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import * as vega from 'vega';
+import * as vl from 'vega-lite';
 
 // API Configuration
 const LIST_API_URL = 'https://api.unstoppableswap.net/api/list';
 const LIQUIDITY_DAILY_API_URL = 'https://api.unstoppableswap.net/api/liquidity-daily';
+const GITHUB_API_BASE = 'https://api.github.com/repos/eigenwallet/core';
+const GITHUB_RELEASES_API = `${GITHUB_API_BASE}/releases`;
 
 // Cache Configuration
 const CACHE_FILE_NAME = '.stats-cache.json';
@@ -36,6 +40,7 @@ interface StatsData {
   totalLiquidity: number; // in BTC
   maxSwap: number; // in BTC
   minSwap: number; // in BTC
+  totalDownloads: number; // total GitHub downloads
   liquidityChart: string; // SVG string
   lastUpdated: string;
 }
@@ -45,6 +50,7 @@ interface CachedData {
   data: {
     peers: PeerData[];
     liquidity: LiquidityDayData[];
+    totalDownloads: number;
   };
 }
 
@@ -61,7 +67,7 @@ function isDevelopmentMode(): boolean {
 /**
  * Load cached data if available and valid
  */
-function loadCache(): { peers: PeerData[]; liquidity: LiquidityDayData[]; } | null {
+function loadCache(): { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; } | null {
   if (!fs.existsSync(CACHE_FILE)) {
     return null;
   }
@@ -87,7 +93,7 @@ function loadCache(): { peers: PeerData[]; liquidity: LiquidityDayData[]; } | nu
 /**
  * Save data to cache
  */
-function saveCache(data: { peers: PeerData[]; liquidity: LiquidityDayData[]; }): void {
+function saveCache(data: { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; }): void {
   const cached: CachedData = {
     timestamp: Date.now(),
     data
@@ -104,12 +110,13 @@ function saveCache(data: { peers: PeerData[]; liquidity: LiquidityDayData[]; }):
 /**
  * Fetch API data
  */
-async function fetchApiData(): Promise<{ peers: PeerData[]; liquidity: LiquidityDayData[]; }> {
+async function fetchApiData(): Promise<{ peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; }> {
   console.log('Fetching statistics data from APIs...');
   
-  const [peersResponse, liquidityResponse] = await Promise.all([
+  const [peersResponse, liquidityResponse, totalDownloads] = await Promise.all([
     fetch(LIST_API_URL),
-    fetch(LIQUIDITY_DAILY_API_URL)
+    fetch(LIQUIDITY_DAILY_API_URL),
+    fetchTotalDownloads()
   ]);
 
   if (!peersResponse.ok) {
@@ -123,7 +130,40 @@ async function fetchApiData(): Promise<{ peers: PeerData[]; liquidity: Liquidity
   const peers: PeerData[] = await peersResponse.json();
   const liquidity: LiquidityDayData[] = await liquidityResponse.json();
 
-  return { peers, liquidity };
+  return { peers, liquidity, totalDownloads };
+}
+
+/**
+ * Fetch total downloads from GitHub releases
+ */
+async function fetchTotalDownloads(): Promise<number> {
+  try {
+    console.log('Fetching GitHub download statistics...');
+    const response = await fetch(GITHUB_RELEASES_API);
+    
+    if (!response.ok) {
+      console.warn(`GitHub API responded with status: ${response.status}`);
+      return 0;
+    }
+
+    const releases: any[] = await response.json();
+    
+    let totalDownloads = 0;
+    for (const release of releases) {
+      if (release.assets && Array.isArray(release.assets)) {
+        for (const asset of release.assets) {
+          if (asset.download_count) {
+            totalDownloads += asset.download_count;
+          }
+        }
+      }
+    }
+
+    return totalDownloads;
+  } catch (error) {
+    console.warn('Failed to fetch GitHub download statistics:', error);
+    return 0;
+  }
 }
 
 /**
@@ -144,6 +184,21 @@ function formatNumber(value: number, decimals: number = 4): string {
 }
 
 /**
+ * Format large numbers with k, M, B suffixes and one decimal place
+ */
+function formatLargeNumber(value: number): string {
+  if (value >= 1000000000) {
+    return (value / 1000000000).toFixed(1) + 'B';
+  } else if (value >= 1000000) {
+    return (value / 1000000).toFixed(1) + 'M';
+  } else if (value >= 1000) {
+    return (value / 1000).toFixed(1) + 'k';
+  } else {
+    return value.toString();
+  }
+}
+
+/**
  * Convert date array to readable date
  */
 function formatDate(dateArray: number[]): string {
@@ -159,73 +214,126 @@ function formatDate(dateArray: number[]): string {
 }
 
 /**
- * Generate SVG chart for liquidity data
+ * Generate SVG chart for liquidity data using Vega-Lite
  */
-function generateLiquidityChart(liquidityData: LiquidityDayData[]): string {
-  const width = 800;
-  const height = 200;
-  const padding = 40;
-  
-  // Take first 200 days (most recent) and reverse to show chronological order (oldest to newest)
-  const recentData = liquidityData.reverse();
-  
-  if (recentData.length === 0) {
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <text x="${width/2}" y="${height/2}" text-anchor="middle" fill="#666">No data available</text>
+async function generateLiquidityChart(liquidityData: LiquidityDayData[]): Promise<string> {
+  if (liquidityData.length === 0) {
+    return `<svg width="800" height="200" viewBox="0 0 800 200">
+      <text x="400" y="100" text-anchor="middle" fill="#666">No data available</text>
     </svg>`;
   }
 
-  const values = recentData.map(d => d.totalLiquidityBtc);
-  const maxValue = Math.max(...values);
-  const minValue = Math.min(...values);
-  const range = maxValue - minValue || 1;
+  // Transform data for Vega-Lite
+  const chartData = liquidityData.map(d => {
+    const year = d.date[0];
+    const dayOfYear = d.date[1];
+    const date = new Date(year, 0, dayOfYear);
+    
+    return {
+      date: date.toISOString().split('T')[0], // YYYY-MM-DD format
+      liquidity: d.totalLiquidityBtc
+    };
+  }).reverse(); // Reverse to show chronological order (oldest to newest)
 
-  // Generate path data
-  const points = recentData.map((d, i) => {
-    const x = padding + (i * (width - 2 * padding)) / (recentData.length - 1);
-    const y = height - padding - ((d.totalLiquidityBtc - minValue) / range) * (height - 2 * padding);
-    return `${x},${y}`;
-  });
+  // Vega-Lite specification
+  const spec: vl.TopLevelSpec = {
+    $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+    width: 720,
+    height: 160,
+    background: 'transparent',
+    padding: { left: 20, right: 0, top: 0, bottom: 0 },
+    data: {
+      values: chartData
+    },
+    layer: [
+             // Area chart
+       {
+         mark: {
+           type: 'area',
+           color: '#ff6b35',
+           opacity: 0.2,
+           line: false
+         },
+        encoding: {
+          x: {
+            field: 'date',
+            type: 'temporal',
+            axis: {
+              format: '%b %d',
+              labelAngle: 0,
+              labelFontSize: 12,
+              labelColor: '#666',
+              tickColor: 'transparent',
+              domainColor: 'transparent',
+              grid: false
+            }
+          },
+                     y: {
+             field: 'liquidity',
+             type: 'quantitative',
+             axis: {
+               labelFontSize: 12,
+               labelColor: '#666',
+               tickColor: 'transparent',
+               domainColor: 'transparent',
+               grid: false,
+               format: '.4f',
+               title: 'BTC',
+               titleFontSize: 12,
+               titleColor: '#666'
+             }
+           }
+        }
+      },
+      // Line chart
+      {
+        mark: {
+          type: 'line',
+          color: '#ff6b35',
+          strokeWidth: 2,
+          strokeCap: 'round',
+          strokeJoin: 'round'
+        },
+        encoding: {
+          x: {
+            field: 'date',
+            type: 'temporal'
+          },
+          y: {
+            field: 'liquidity',
+            type: 'quantitative'
+          }
+        }
+      }
+    ],
+    resolve: {
+      scale: { y: 'shared', x: 'shared' }
+    }
+  };
 
-  const pathData = `M ${points.join(' L ')}`;
-
-  // Create area fill
-  const firstPoint = points[0];
-  const lastPoint = points[points.length - 1];
-  const areaData = `${pathData} L ${lastPoint.split(',')[0]},${height - padding} L ${firstPoint.split(',')[0]},${height - padding} Z`;
-
-  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%; height: auto;">
-    <defs>
-      <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.3" />
-        <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0.05" />
-      </linearGradient>
-    </defs>
+  try {
+    // Compile Vega-Lite to Vega
+    const vegaSpec = vl.compile(spec).spec;
     
-    <!-- Background -->
-    <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" />
+    // Create Vega view and render to SVG
+    const view = new vega.View(vega.parse(vegaSpec), { renderer: 'none' });
+    const svg = await view.toSVG();
     
-    <!-- Area fill -->
-    <path d="${areaData}" fill="url(#areaGradient)" />
-    
-    <!-- Main line -->
-    <path d="${pathData}" fill="none" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-    
-    <!-- Y-axis labels -->
-    <text x="${padding - 10}" y="${padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(maxValue)} BTC</text>
-    <text x="${padding - 10}" y="${height - padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(minValue)} BTC</text>
-    
-    <!-- X-axis labels -->
-    <text x="${padding}" y="${height - padding + 20}" text-anchor="start" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatDate(recentData[0].date)}</text>
-    <text x="${width - padding}" y="${height - padding + 20}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatDate(recentData[recentData.length - 1].date)}</text>
-  </svg>`;
+    // Add responsive styling to the SVG
+    return svg.replace('<svg', '<svg style="max-width: 100%; height: auto;"');
+  } catch (error) {
+    console.error('Failed to generate chart:', error);
+    return `<svg width="800" height="200" viewBox="0 0 800 200">
+      <text x="400" y="100" text-anchor="middle" fill="#666">Chart generation failed</text>
+    </svg>`;
+  }
 }
 
 /**
  * Generate statistics data
  */
 export async function generateStatsData(): Promise<StatsData> {
-  let apiData: { peers: PeerData[]; liquidity: LiquidityDayData[]; };
+  let apiData: { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; };
 
   // Try cache in development mode
   if (isDevelopmentMode()) {
@@ -241,7 +349,7 @@ export async function generateStatsData(): Promise<StatsData> {
     apiData = await fetchApiData();
   }
 
-  const { peers, liquidity } = apiData;
+  const { peers, liquidity, totalDownloads } = apiData;
 
   // Calculate statistics
   const activePeers = peers.filter(p => !p.testnet);
@@ -256,12 +364,13 @@ export async function generateStatsData(): Promise<StatsData> {
   const minSwap = satoshisToBtc(minSwapSatoshis);
 
   // Generate chart
-  const liquidityChart = generateLiquidityChart(liquidity);
+  const liquidityChart = await generateLiquidityChart(liquidity);
 
   return {
     totalLiquidity,
     maxSwap,
     minSwap,
+    totalDownloads,
     liquidityChart,
     lastUpdated: new Date().toISOString().split('T')[0]
   };
@@ -277,6 +386,7 @@ export async function processStatsTemplate(template: string): Promise<string> {
     .replace(/\{\{TOTAL_LIQUIDITY\}\}/g, formatNumber(statsData.totalLiquidity))
     .replace(/\{\{MAX_SWAP\}\}/g, formatNumber(statsData.maxSwap))
     .replace(/\{\{MIN_SWAP\}\}/g, formatNumber(statsData.minSwap))
+    .replace(/\{\{TOTAL_DOWNLOADS\}\}/g, formatLargeNumber(statsData.totalDownloads))
     .replace(/\{\{LIQUIDITY_CHART\}\}/g, statsData.liquidityChart)
     .replace(/\{\{LAST_UPDATED\}\}/g, statsData.lastUpdated);
 } 

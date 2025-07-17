@@ -15,6 +15,11 @@
     <div style="font-size: 2rem; font-weight: bold; color: #ff6b35;">{{MIN_SWAP}}</div>
     <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Minimum Swap (BTC)</div>
   </div>
+  
+  <div style="text-align: center; padding: 1.5rem; border: 1px solid #333; border-radius: 8px;">
+    <div style="font-size: 2rem; font-weight: bold; color: #ff6b35;">{{TOTAL_DOWNLOADS}}</div>
+    <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Total Downloads</div>
+  </div>
 </div>
 
 ### Liquidity Over Time
