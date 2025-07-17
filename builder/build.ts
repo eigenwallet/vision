@@ -8,12 +8,7 @@ interface FootnoteMatch {
   content: string;
 }
 
-interface AbstractMatch {
-  content: string;
-  previousText: string;
-  link: string;
-  linkText: string;
-}
+
 
 // Configure marked to handle footnotes and math
 marked.setOptions({
@@ -116,26 +111,23 @@ function extractAbstractAndMainContent(content: string): {
   abstract: string;
   main: string;
 } {
+  // Match abstract without URL
   const abstractMatch = content.match(
-    /<h2>Abstract<\/h2>\s*<p><strong><em>eigenwallet<\/em><\/strong> (.*?)<\/p>\s*<p>(.*?)<\/p>\s*<p><a href="(.*?)">(.*?)<\/a><\/p>/s
+    /<h2>Abstract<\/h2>\s*<p><strong><em>eigenwallet<\/em><\/strong> (.*?)<\/p>\s*<p>(.*?)<\/p>/s
   );
 
   let abstractContent = '';
   let mainContent = content;
 
   if (abstractMatch) {
-    const abstract: AbstractMatch = {
-      content: abstractMatch[1],
-      previousText: abstractMatch[2],
-      link: abstractMatch[3],
-      linkText: abstractMatch[4],
-    };
+    const content1 = abstractMatch[1];
+    const content2 = abstractMatch[2];
 
-    abstractContent = `<p><strong><em>eigenwallet</em></strong> ${abstract.content}<br>${abstract.previousText}<br><a href="${abstract.link}">${abstract.linkText}</a>.</p>`;
+    abstractContent = `<p><strong><em>eigenwallet</em></strong> ${content1}<br>${content2}</p>`;
 
     // Remove the abstract section from the main content
     mainContent = content.replace(
-      /<h1><strong>eigenwallet<\/strong><\/h1>\s*<h2>Abstract<\/h2>\s*<p>.*?<\/p>\s*<p>.*?<\/p>\s*<p><a href=".*?">.*?<\/a><\/p>\s*<hr>/s,
+      /<h1><strong>eigenwallet<\/strong><\/h1>\s*<h2>Abstract<\/h2>\s*<p>.*?<\/p>\s*<p>.*?<\/p>\s*<hr>/s,
       ''
     );
   } else {
