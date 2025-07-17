@@ -212,8 +212,8 @@ function generateLiquidityChart(liquidityData: LiquidityDayData[]): string {
     <path d="${pathData}" fill="none" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
     
     <!-- Y-axis labels -->
-    <text x="${padding - 10}" y="${padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(maxValue)}</text>
-    <text x="${padding - 10}" y="${height - padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(minValue)}</text>
+    <text x="${padding - 10}" y="${padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(maxValue)} BTC</text>
+    <text x="${padding - 10}" y="${height - padding + 5}" text-anchor="end" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatNumber(minValue)} BTC</text>
     
     <!-- X-axis labels -->
     <text x="${padding}" y="${height - padding + 20}" text-anchor="start" fill="#666" font-size="12" font-family="system-ui, sans-serif">${formatDate(recentData[0].date)}</text>
