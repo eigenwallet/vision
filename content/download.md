@@ -1,6 +1,6 @@
 ### Wallet {{LATEST_VERSION}}
 
-**Recommended for most users.** Pre-compiled binaries for the _eigenwallet_ GUI. Allows you to store, send and receive Monero. And to exchange Bitcoin $\rightarrow$ Monero using Atomic Swaps.
+**Recommended for most users.** Pre-compiled binaries for the _eigenwallet_ GUI. Will allow you to store, send and receive Monero. Already supports exchanging Bitcoin $\rightarrow$ Monero using Atomic Swaps.
 
 {{GUI_TABLE}}
 

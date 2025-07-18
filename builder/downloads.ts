@@ -438,6 +438,9 @@ function generateTable(assets: DownloadAsset[], title: string): string {
   </thead>
   <tbody>`;
 
+  // Check if Windows builds are missing and add notice
+  const hasWindowsBuilds = platformGroups['Windows'] && platformGroups['Windows'].length > 0;
+  
   // Define platform order and icons
   for (const platform of PLATFORM_ORDER) {
     if (!platformGroups[platform]) continue;
@@ -474,6 +477,16 @@ function generateTable(assets: DownloadAsset[], title: string): string {
       <td>${asset.size}</td>
     </tr>`;
     }
+  }
+
+  // Add Windows notice at the bottom if no Windows builds are available
+  if (!hasWindowsBuilds) {
+    tableHtml += `
+    <tr>
+      <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+        Windows builds are coming in the next 1-2 weeks
+      </td>
+    </tr>`;
   }
 
   tableHtml += `
