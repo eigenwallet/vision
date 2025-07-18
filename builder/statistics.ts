@@ -238,10 +238,10 @@ async function generateLiquidityChart(liquidityData: LiquidityDayData[]): Promis
   // Vega-Lite specification
   const spec: vl.TopLevelSpec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-    width: 720,
-    height: 160,
+    width: 750,
+    height: 500,
     background: 'transparent',
-    padding: { left: 20, right: 0, top: 0, bottom: 0 },
+    padding: { left: 0, right: 0, top: 0, bottom: 0 },
     data: {
       values: chartData
     },
@@ -256,30 +256,32 @@ async function generateLiquidityChart(liquidityData: LiquidityDayData[]): Promis
          },
         encoding: {
           x: {
+            title: null,
             field: 'date',
             type: 'temporal',
             axis: {
               format: '%b %d',
               labelAngle: 0,
-              labelFontSize: 12,
+              labelFontSize: 18,
               labelColor: '#666',
               tickColor: 'transparent',
               domainColor: 'transparent',
               grid: false
             }
           },
-                     y: {
+          y: {
+            title: null,
              field: 'liquidity',
              type: 'quantitative',
              axis: {
-               labelFontSize: 12,
+               labelFontSize: 18,
                labelColor: '#666',
                tickColor: 'transparent',
                domainColor: 'transparent',
                grid: false,
-               format: '.4f',
-               title: 'BTC',
-               titleFontSize: 12,
+               format: '.1f',
+               labelExpr: 'datum.value == 0 ? "" : format(datum.value, ".0f") + " BTC"',
+               titleFontSize: 18,
                titleColor: '#666'
              }
            }
