@@ -6,8 +6,10 @@ import * as vl from 'vega-lite';
 // API Configuration
 const LIST_API_URL = 'https://api.unstoppableswap.net/api/list';
 const LIQUIDITY_DAILY_API_URL = 'https://api.unstoppableswap.net/api/liquidity-daily';
-const GITHUB_API_BASE = 'https://api.github.com/repos/eigenwallet/core';
-const GITHUB_RELEASES_API = `${GITHUB_API_BASE}/releases`;
+const GITHUB_CORE_API_BASE = 'https://api.github.com/repos/eigenwallet/core';
+const GITHUB_GUI_API_BASE = 'https://api.github.com/repos/eigenwallet/unstoppableswap-gui';
+const GITHUB_CORE_RELEASES_API = `${GITHUB_CORE_API_BASE}/releases`;
+const GITHUB_GUI_RELEASES_API = `${GITHUB_GUI_API_BASE}/releases`;
 
 // Cache Configuration
 const CACHE_FILE_NAME = '.stats-cache.json';
@@ -134,29 +136,52 @@ async function fetchApiData(): Promise<{ peers: PeerData[]; liquidity: Liquidity
 }
 
 /**
- * Fetch total downloads from GitHub releases
+ * Fetch total downloads from GitHub releases (both core and GUI repositories)
  */
 async function fetchTotalDownloads(): Promise<number> {
   try {
-    console.log('Fetching GitHub download statistics...');
-    const response = await fetch(GITHUB_RELEASES_API);
+    console.log('Fetching GitHub download statistics from both repositories...');
     
-    if (!response.ok) {
-      console.warn(`GitHub API responded with status: ${response.status}`);
-      return 0;
-    }
-
-    const releases: any[] = await response.json();
+    // Fetch from both repositories in parallel
+    const [coreResponse, guiResponse] = await Promise.all([
+      fetch(GITHUB_CORE_RELEASES_API),
+      fetch(GITHUB_GUI_RELEASES_API)
+    ]);
     
     let totalDownloads = 0;
-    for (const release of releases) {
-      if (release.assets && Array.isArray(release.assets)) {
-        for (const asset of release.assets) {
-          if (asset.download_count) {
-            totalDownloads += asset.download_count;
+    
+    // Process core repository downloads
+    if (coreResponse.ok) {
+      const coreReleases: any[] = await coreResponse.json();
+      for (const release of coreReleases) {
+        if (release.assets && Array.isArray(release.assets)) {
+          for (const asset of release.assets) {
+            if (asset.download_count) {
+              totalDownloads += asset.download_count;
+            }
           }
         }
       }
+      console.log('Fetched core repository download statistics');
+    } else {
+      console.warn(`Core GitHub API responded with status: ${coreResponse.status}`);
+    }
+    
+    // Process GUI repository downloads
+    if (guiResponse.ok) {
+      const guiReleases: any[] = await guiResponse.json();
+      for (const release of guiReleases) {
+        if (release.assets && Array.isArray(release.assets)) {
+          for (const asset of release.assets) {
+            if (asset.download_count) {
+              totalDownloads += asset.download_count;
+            }
+          }
+        }
+      }
+      console.log('Fetched GUI repository download statistics');
+    } else {
+      console.warn(`GUI GitHub API responded with status: ${guiResponse.status}`);
     }
 
     return totalDownloads;
@@ -341,9 +366,11 @@ export async function generateStatsData(): Promise<StatsData> {
   if (isDevelopmentMode()) {
     const cachedData = loadCache();
     if (cachedData) {
+      console.log(`Using cached downloads: ${cachedData.totalDownloads}`);
       apiData = cachedData;
     } else {
       apiData = await fetchApiData();
+      console.log(`Caching fresh downloads: ${apiData.totalDownloads}`);
       saveCache(apiData);
     }
   } else {
