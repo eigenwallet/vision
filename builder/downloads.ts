@@ -469,7 +469,7 @@ export async function generateAurTable(): Promise<string> {
 
   const tableRows = packagesWithVersions.map(pkg => {
     return `  <tr>
-    <td><a href="${pkg.packageUrl}">${pkg.name}</a></td>
+    <td><a href="${pkg.packageUrl}"><code>${pkg.name}</code></a></td>
     <td>${pkg.version}</td>
     <td><a href="${pkg.maintainerUrl}">${pkg.maintainer}</a></td>
   </tr>`;
