@@ -143,6 +143,19 @@ function extractAbstractAndMainContent(content: string): {
 }
 
 /**
+ * Generate social media links section
+ */
+function generateSocialLinks(): string {
+  return `
+  <div style="text-align: center; margin: 2rem 0;">
+    <a href="https://discord.gg/aqSyyJ35UW" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/discord.svg" alt="Discord" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
+    <a href="https://x.com/eigenwallet" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/x.svg" alt="Twitter/X" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
+    <a href="https://matrix.to/#/%23unstoppableswap-space:matrix.org" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/matrix.svg" alt="Matrix" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
+    <a href="https://github.com/eigenwallet/core" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/github.svg" alt="GitHub" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
+  </div>`;
+}
+
+/**
  * Generate navigation component
  */
 function generateNavigation(currentFileName: string): string {
@@ -159,7 +172,6 @@ function generateNavigation(currentFileName: string): string {
     <a href="index.html" style="${visionStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Vision</a>
     <a href="download.html" style="${downloadStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Download</a>
     <a href="statistics.html" style="${statsStyle} color: inherit; margin: 0 1rem; font-weight: 500;">Statistics</a>
-    <a href="https://github.com/eigenwallet/core" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem; font-weight: 500;">GitHub</a>
   </nav>
   <hr style="margin: 0.5rem 0 2rem 0;" />`;
 }
@@ -181,6 +193,7 @@ function generateHtmlDocument(
     : '';
 
   const isIndexPage = fileName === 'index.html';
+  const socialLinksSection = isIndexPage ? generateSocialLinks() : '';
   const backButton = !isIndexPage
     ? `<a href="index.html" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); text-decoration: none; font-size: 1.5em; color: inherit; padding: 0.5rem;">&lt;</a>`
     : '';
@@ -208,6 +221,7 @@ function generateHtmlDocument(
     </a>
   </header>
 ${abstractSection}
+${socialLinksSection}
 
   <main>
     <article>
