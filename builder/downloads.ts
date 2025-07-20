@@ -116,6 +116,7 @@ interface AURPackage {
   maintainer: string;
   maintainerUrl: string;
   version?: string;
+  architectures: string[];
 }
 
 const AUR_PACKAGES: AURPackage[] = [
@@ -123,13 +124,15 @@ const AUR_PACKAGES: AURPackage[] = [
     name: 'eigenwallet-bin',
     packageUrl: 'https://aur.archlinux.org/packages/eigenwallet-bin',
     maintainer: 'Kainoa Kanter (That1Calculator)',
-    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator'
+    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator',
+    architectures: ['x86_64'],
   },
   {
     name: 'eigenwallet-developertools-bin',
     packageUrl: 'https://aur.archlinux.org/packages/eigenwallet-developertools-bin',
     maintainer: 'Kainoa Kanter (That1Calculator)',
-    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator'
+    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator',
+    architectures: ['x86_64'],
   }
 ];
 
@@ -301,13 +304,13 @@ function parseAssetName(assetName: string): { platform: string; architecture: st
       const macReleaseType = name.includes(FILE_EXTENSIONS.DMG) ? 'DMG' : name.includes(FILE_EXTENSIONS.APP_BUNDLE) ? 'Bundle' : 'Binary';
       architecture = "Intel <span style='float: right;'>" + macReleaseType + "</span>";
     } else if (isAppImage) {
-      architecture = "x86 <span style='float: right;'>AppImage</span>";
+      architecture = "x86_64 <span style='float: right;'>AppImage</span>";
     } else if (isDebian) {
-      architecture = "x86 <span style='float: right;'>Debian</span>";
+      architecture = "x86_64 <span style='float: right;'>Debian</span>";
     } else if (isTar) {
-      architecture = "x64 <span style='float: right;'>Binary</span>";
+      architecture = "x86_64 <span style='float: right;'>Binary</span>";
     } else {
-      architecture = "x64";
+      architecture = "x86_64";
     }
   } else if (ARCH_PATTERNS.ARM64.some(p => name.includes(p))) {
     if (platform === "macOS") {
@@ -344,13 +347,13 @@ function parseAssetName(assetName: string): { platform: string; architecture: st
     }
   } else if (ARCH_PATTERNS.X86.some(p => name.includes(p))) {
     if (isAppImage) {
-      architecture = "AppImage <span style='float: right;'>x86</span>";
+      architecture = "AppImage <span style='float: right;'>x86_64</span>";
     } else if (isDebian) {
-      architecture = "Debian <span style='float: right;'>x86</span>";
+      architecture = "Debian <span style='float: right;'>x86_64</span>";
     } else if (isTar) {
-      architecture = "x86 <span style='float: right;'>Binary</span>";
+      architecture = "x86_64 <span style='float: right;'>Binary</span>";
     } else {
-      architecture = "x86";
+      architecture = "x86_64";
     }
   }
 
@@ -469,6 +472,7 @@ export async function generateAurTable(): Promise<string> {
 
   const tableRows = packagesWithVersions.map(pkg => {
     return `  <tr>
+    <td>${pkg.architectures.join(", ")}</td>
     <td><a href="${pkg.packageUrl}"><code>${pkg.name}</code></a></td>
     <td>${pkg.version}</td>
     <td><a href="${pkg.maintainerUrl}">${pkg.maintainer}</a></td>
@@ -478,6 +482,7 @@ export async function generateAurTable(): Promise<string> {
   return `<table>
   <thead>
     <tr>
+      <th>Architecture</th>
       <th>Package</th>
       <th>Version</th>
       <th>Maintainer</th>
