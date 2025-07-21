@@ -1,4 +1,4 @@
-## Why the rename?
+## _UnstoppableSwap_ is now _Eigenwallet_
 
 The _eigenwallet_ project was previously called _UnstoppableSwap_. Why the rename you might ask?
 
@@ -32,3 +32,21 @@ We are confident that, the only way to make this work is to:
 > Build the best non-custodial cross-platform Monero wallet. A wallet that is recommended by the community to new users. A wallet that is loved by power-users. A wallet with first-class support for Atomic Swaps.
 
 This is what we are building. We know where we are going, and we are fairly sure we know how to get there. It's less of a sprint and more of a marathon but we are in this for the long haul. We want this to exist, someone needs to build it, and we are going to be the ones to do it.
+
+#### Signed proof
+
+Below is a signed proof by me ([_binarybaron_](https://github.com/binarybaron)) that I willingly renamed the project and I am in control of the eigenwallet.org domain and the new GitHub organization.
+
+```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+UnstoppableSwap has renamed to eigenwallet. UnstoppableSwap.net has moved to eigenwallet.org. The Github organization has moved from https://github.com/UnstoppableSwap/core to https://github.com/eigenwallet/core. Signed by binarybaron (core developer)
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQQ1qETX9LVbxE4YD/GZt10+FHaibgUCaH30KAAKCRCZt10+FHai
+bl6JAQCX4TJjn1MHuyDQ6jbi3h4eE9Iv8/D0VMC/wIfcfEoTcAD/c/9DHHxXuY0p
+XpfUady82HlQvbhF6fGHs1mDDRC4Xgg=
+=v8bE
+-----END PGP SIGNATURE-----
+```

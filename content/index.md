@@ -5,7 +5,7 @@
 **_eigenwallet_** is an ambitious community effort to build the Monero wallet
 for the future.
 
-It was previously known as _UnstoppableSwap_.
+Previously known as _UnstoppableSwap_ ([Why rename?](rename.html)).
 
 ---
 
