@@ -264,6 +264,13 @@ function writeHtmlFile(
 }
 
 /**
+ * Check if download assets flag is enabled
+ */
+function shouldDownloadAssets(): boolean {
+  return process.argv.includes('--download-assets');
+}
+
+/**
  * Build a single markdown file to HTML
  */
 async function buildFile(inputPath: string, outputPath: string): Promise<void> {
@@ -273,7 +280,8 @@ async function buildFile(inputPath: string, outputPath: string): Promise<void> {
   // Special handling for download page
   const fileName = path.basename(inputPath, '.md');
   if (fileName === 'download') {
-    markdownContent = await processDownloadTemplate(markdownContent);
+    const downloadAssets = shouldDownloadAssets();
+    markdownContent = await processDownloadTemplate(markdownContent, downloadAssets);
   }
 
   // Convert markdown to HTML

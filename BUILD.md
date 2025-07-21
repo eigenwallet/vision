@@ -25,6 +25,14 @@ TypeScript for better type safety and developer experience.
 npm run build:md
 ```
 
+### Build for static deployment (with local assets)
+
+```bash
+npm run build:static
+```
+
+This downloads all GitHub release assets locally to `dist/assets/` and modifies the download page to reference these local files instead of GitHub URLs. This enables fully static deployment without dependencies on GitHub's servers.
+
 ### Watch for changes (development mode)
 
 ```bash

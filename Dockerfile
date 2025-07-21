@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build the static content
-RUN npm run build:md
+RUN npm run build:static
 
 # Production stage
 FROM nginx:alpine

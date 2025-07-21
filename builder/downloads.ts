@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import cliProgress from 'cli-progress';
 
 // API and Repository Configuration
 const GITHUB_API_BASE = 'https://api.github.com/repos/eigenwallet/core';
@@ -497,10 +498,142 @@ function generateTable(assets: DownloadAsset[], title: string): string {
 }
 
 /**
+ * Download an asset file to local assets directory
+ */
+async function downloadAsset(url: string, filename: string): Promise<string> {
+  const assetsDir = path.join(process.cwd(), 'dist', 'assets');
+  
+  // Ensure assets directory exists
+  if (!fs.existsSync(assetsDir)) {
+    fs.mkdirSync(assetsDir, { recursive: true });
+  }
+  
+  const localPath = path.join(assetsDir, filename);
+  const relativePath = `assets/${filename}`;
+  
+  // Check if file already exists
+  if (fs.existsSync(localPath)) {
+    console.log(`Asset already exists: ${relativePath}`);
+    return relativePath;
+  }
+  
+  try {
+    console.log(`\nDownloading ${filename}...`);
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      console.warn(`Failed to download ${filename}: ${response.status}`);
+      return url; // Fallback to original URL
+    }
+    
+    const contentLength = parseInt(response.headers.get('content-length') || '0');
+    const reader = response.body?.getReader();
+    
+    if (!reader) {
+      console.warn(`No response body for ${filename}`);
+      return url;
+    }
+    
+    // Create progress bar
+    const progressBar = new cliProgress.SingleBar({
+      format: `  {filename} |{bar}| {percentage}% | {value}/{total} MB | ETA: {eta}s | Speed: {speed} MB/s`,
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591',
+      hideCursor: true
+    }, cliProgress.Presets.shades_classic);
+    
+    const totalMB = Math.round((contentLength / 1024 / 1024) * 100) / 100;
+    progressBar.start(totalMB, 0, {
+      filename: filename.length > 25 ? '...' + filename.slice(-22) : filename,
+      speed: '0.00'
+    });
+    
+    const chunks: Uint8Array[] = [];
+    let receivedLength = 0;
+    const startTime = Date.now();
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      
+      if (done) break;
+      
+      chunks.push(value);
+      receivedLength += value.length;
+      
+      // Update progress bar
+      const receivedMB = Math.round((receivedLength / 1024 / 1024) * 100) / 100;
+      const elapsedSeconds = (Date.now() - startTime) / 1000;
+      const speed = elapsedSeconds > 0 ? Math.round((receivedMB / elapsedSeconds) * 100) / 100 : 0;
+      
+      progressBar.update(receivedMB, {
+        filename: filename.length > 25 ? '...' + filename.slice(-22) : filename,
+        speed: speed.toFixed(2)
+      });
+    }
+    
+    progressBar.stop();
+    
+    // Combine chunks and write to file
+    const buffer = new Uint8Array(receivedLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      buffer.set(chunk, offset);
+      offset += chunk.length;
+    }
+    
+    fs.writeFileSync(localPath, buffer);
+    console.log(`✓ Downloaded ${filename} (${totalMB} MB)`);
+    return relativePath;
+  } catch (error) {
+    console.warn(`Error downloading ${filename}:`, error);
+    return url; // Fallback to original URL
+  }
+}
+
+/**
+ * Download all assets for a release and update URLs
+ */
+async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseInfo> {
+  const updatedAssets = await Promise.all(
+    releaseInfo.assets.map(async (asset) => {
+      const filename = asset.downloadUrl.split('/').pop() || 'unknown';
+      const signatureFilename = `${filename}.sig`;
+      
+      // Download main asset
+      const localDownloadUrl = await downloadAsset(asset.downloadUrl, filename);
+      
+      // Download signature file if it exists
+      let localSignatureUrl = asset.signatureUrl;
+      if (asset.signatureUrl) {
+        localSignatureUrl = await downloadAsset(asset.signatureUrl, signatureFilename);
+      }
+      
+      return {
+        ...asset,
+        downloadUrl: localDownloadUrl,
+        signatureUrl: localSignatureUrl
+      };
+    })
+  );
+  
+  return {
+    ...releaseInfo,
+    assets: updatedAssets
+  };
+}
+
+/**
  * Process download template with actual data
  */
-export async function processDownloadTemplate(template: string): Promise<string> {
-  const releaseInfo = await generateDownloadData();
+export async function processDownloadTemplate(template: string, downloadAssets: boolean = false): Promise<string> {
+  let releaseInfo = await generateDownloadData();
+  
+  // Download assets locally if flag is enabled
+  if (downloadAssets) {
+    console.log('Downloading assets locally...');
+    releaseInfo = await downloadReleaseAssets(releaseInfo);
+  }
+  
   const guiTable = generateGuiTable(releaseInfo);
   const cliTable = generateCliTable(releaseInfo);
   

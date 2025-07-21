@@ -5,6 +5,9 @@ dist-build
 # GitHub API cache for development
 .github-cache.json
 
+# Downloaded assets for static deployment
+dist/assets
+
 #region https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs
 logs
