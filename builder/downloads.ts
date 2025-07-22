@@ -168,7 +168,7 @@ function loadCache(): GitHubRelease | null {
       console.log('Cache expired, fetching fresh data...');
       return null;
     }
-  } catch (error) {
+  } catch {
     console.log('Cache file corrupted, fetching fresh data...');
     return null;
   }
@@ -209,7 +209,7 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
         throw new Error(`GitHub API responded with status: ${response.status}. Please check your internet connection or GitHub API rate limits.`);
       }
 
-      release = await response.json();
+      release = await response.json() as GitHubRelease;
       saveCache(release);
     }
   } else {
@@ -219,7 +219,7 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
       throw new Error(`GitHub API responded with status: ${response.status}. Please check your internet connection or GitHub API rate limits.`);
     }
 
-    release = await response.json();
+    release = await response.json() as GitHubRelease;
   }
 
   // Filter for relevant wallet assets (exclude .sig files)
@@ -246,7 +246,6 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
 
   // Add source archive if no specific eigenwallet assets found
   if (assets.length === 0) {
-    const version = release.tag_name.replace(/^v/, '');
     assets.push({
       name: "Source Code (.tar.gz)",
       downloadUrl: `${GITHUB_ARCHIVE_BASE}/${release.tag_name}.tar.gz`,
@@ -422,7 +421,27 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
     asset.downloadUrl.includes(ASSET_PREFIXES.GUI)
   );
 
-  return generateTable(guiAssets, "GUI Downloads");
+  // Add hard-coded Flatpak row for Linux
+  const flatpakAsset: DownloadAsset = {
+    name: "Flatpak",
+    downloadUrl: "/flatpak.html",
+    signatureUrl: "",
+    size: "",
+    architecture: "x86_64 <span style='float: right;'>Flatpak</span>",
+    platform: "Linux",
+    type: "instructions"
+  };
+  const aurAsset: DownloadAsset = {
+    name: "AUR",
+    downloadUrl: "/download.html#aur",
+    signatureUrl: "",
+    size: "",
+    architecture: "x86_64 <span style='float: right;'>AUR</span>",
+    platform: "Linux",
+    type: "instructions"
+  };
+
+  return generateTable([...guiAssets, flatpakAsset, aurAsset], "GUI Downloads");
 }
 
 /**
@@ -433,8 +452,17 @@ export function generateCliTable(releaseInfo: ReleaseInfo): string {
   const cliAssets = releaseInfo.assets.filter(asset =>
     asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP)
   );
+  const aurAsset: DownloadAsset = {
+    name: "AUR",
+    downloadUrl: "/download.html#aur",
+    signatureUrl: "",
+    size: "",
+    architecture: "x86_64 <span style='float: right;'>AUR</span>",
+    platform: "Linux",
+    type: "instructions"
+  };
 
-  return generateTable(cliAssets, "CLI Tools");
+  return generateTable([...cliAssets, aurAsset], "CLI Tools");
 }
 
 /**
@@ -448,7 +476,7 @@ async function fetchAurPackageVersion(packageName: string): Promise<string> {
       return 'N/A';
     }
 
-    const data = await response.json();
+    const data = await response.json() as any;
     if (data.results && data.results.length > 0) {
       return data.results[0].Version || 'N/A';
     }

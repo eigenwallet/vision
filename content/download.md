@@ -35,25 +35,7 @@ Command-line tools for debugging purposes or to run a a maker (to provide liquid
 
 _The release was published on {{RELEASE_DATE}}._ _Read this [guide](https://docs.unstoppableswap.net/getting_started/verify_tauri_signature) to verify the signature of the binaries._
 
-### Flatpak
-
-For Linux systems with Flatpak support, you can install _eigenwallet_ directly from our Flatpak repository.
-
-**Requirements:**
-- Flatpak 1.0 or newer
-- x86_64 architecture
-
-```sh
-# Install
-flatpak remote-add --user unstoppableswap https://unstoppableswap.github.io/core/unstoppableswap.flatpakrepo
-flatpak install unstoppableswap net.unstoppableswap.gui
-
-# Run
-flatpak run net.unstoppableswap.gui
-
-# Update
-flatpak update net.unstoppableswap.gui
-```
+<div id="aur"/>
 
 ### Arch User Repository (AUR) packages
 
