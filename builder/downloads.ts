@@ -473,17 +473,17 @@ export async function generateAurTable(): Promise<string> {
 
   const tableRows = packagesWithVersions.map(pkg => {
     return `  <tr>
-    <td>${pkg.architectures.join(", ")}</td>
+    <td class="hide-mobile">${pkg.architectures.join(", ")}</td>
     <td><a href="${pkg.packageUrl}"><code>${pkg.name}</code></a></td>
     <td>${pkg.version}</td>
     <td><a href="${pkg.maintainerUrl}">${pkg.maintainer}</a></td>
   </tr>`;
   }).join('\n');
 
-  return `<table>
+  return `<table style="max-width: 90dvw; overflow-x: scroll;">
   <thead>
     <tr>
-      <th>Architecture</th>
+      <th class="hide-mobile">Architecture</th>
       <th>Package</th>
       <th>Version</th>
       <th>Maintainer</th>
@@ -491,7 +491,7 @@ export async function generateAurTable(): Promise<string> {
   </thead>
   <tbody>
 ${tableRows}
-  <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+  <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic; white-space: collapse;">
   These packages are unofficial and communitity maintained
   </td>
   </tbody>
@@ -572,7 +572,7 @@ function generateTable(assets: DownloadAsset[], title: string): string {
   if (!hasWindowsBuilds) {
     tableHtml += `
     <tr>
-      <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+      <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic; white-space: collapse;">
         Windows builds are coming in the next 1-2 weeks
       </td>
     </tr>`;
