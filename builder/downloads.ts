@@ -53,6 +53,7 @@ const TEMPLATE_PLACEHOLDERS = {
   RELEASE_DATE: '{{RELEASE_DATE}}',
   GUI_TABLE: '{{GUI_TABLE}}',
   CLI_TABLE: '{{CLI_TABLE}}',
+  AUR_TABLE: '{{AUR_TABLE}}',
   HASHES_LINK: '{{HASHES_LINK}}',
   SIGNING_KEY_LINK: '{{SIGNING_KEY_LINK}}',
 } as const;
@@ -110,11 +111,37 @@ interface CachedData {
   data: GitHubRelease;
 }
 
+interface AURPackage {
+  name: string;
+  packageUrl: string;
+  maintainer: string;
+  maintainerUrl: string;
+  version?: string;
+  architectures: string[];
+}
+
+const AUR_PACKAGES: AURPackage[] = [
+  {
+    name: 'eigenwallet-bin',
+    packageUrl: 'https://aur.archlinux.org/packages/eigenwallet-bin',
+    maintainer: 'Kainoa Kanter (That1Calculator)',
+    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator',
+    architectures: ['x86_64'],
+  },
+  {
+    name: 'eigenwallet-developertools-bin',
+    packageUrl: 'https://aur.archlinux.org/packages/eigenwallet-developertools-bin',
+    maintainer: 'Kainoa Kanter (That1Calculator)',
+    maintainerUrl: 'https://aur.archlinux.org/account/That1Calculator',
+    architectures: ['x86_64'],
+  }
+];
+
 /**
  * Check if we're in development mode
  */
 function isDevelopmentMode(): boolean {
-  return process.env.NODE_ENV === 'development' || 
+  return process.env.NODE_ENV === 'development' ||
          process.env.NODE_ENV === 'dev' ||
          process.argv.includes('--dev') ||
          process.argv.includes('--development');
@@ -131,7 +158,7 @@ function loadCache(): GitHubRelease | null {
   try {
     const cacheContent = fs.readFileSync(CACHE_FILE, 'utf8');
     const cached: CachedData = JSON.parse(cacheContent);
-    
+
     // Check if cache is still valid (within cache duration)
     const now = Date.now();
     if (now - cached.timestamp < CACHE_DURATION_MS) {
@@ -155,7 +182,7 @@ function saveCache(data: GitHubRelease): void {
     timestamp: Date.now(),
     data
   };
-  
+
   try {
     fs.writeFileSync(CACHE_FILE, JSON.stringify(cached, null, 2));
     console.log('GitHub API data cached successfully');
@@ -181,7 +208,7 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
       if (!response.ok) {
         throw new Error(`GitHub API responded with status: ${response.status}. Please check your internet connection or GitHub API rate limits.`);
       }
-      
+
       release = await response.json();
       saveCache(release);
     }
@@ -191,21 +218,21 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
     if (!response.ok) {
       throw new Error(`GitHub API responded with status: ${response.status}. Please check your internet connection or GitHub API rate limits.`);
     }
-    
+
     release = await response.json();
   }
-  
+
   // Filter for relevant wallet assets (exclude .sig files)
-  const walletAssets = release.assets.filter(asset => 
-    (asset.name.startsWith(ASSET_PREFIXES.GUI) || 
-     asset.name.startsWith(ASSET_PREFIXES.CLI_ASB) || 
+  const walletAssets = release.assets.filter(asset =>
+    (asset.name.startsWith(ASSET_PREFIXES.GUI) ||
+     asset.name.startsWith(ASSET_PREFIXES.CLI_ASB) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_SWAP)) &&
     !asset.name.endsWith(FILE_EXTENSIONS.SIGNATURE)
   );
-  
+
   const assets: DownloadAsset[] = walletAssets.map(asset => {
     const { platform, architecture, type } = parseAssetName(asset.name);
-    
+
     return {
       name: getDisplayName(asset.name, type),
       downloadUrl: asset.browser_download_url,
@@ -256,7 +283,7 @@ function isTarFile(assetName: string): boolean {
 function parseAssetName(assetName: string): { platform: string; architecture: string; type: DownloadAsset['type'] } {
   const name = assetName.toLowerCase();
   const isTar = isTarFile(assetName);
-  
+
   // Determine platform first by explicit keywords, then by file extensions
   let platform = "Unknown";
   if (PLATFORM_PATTERNS.LINUX.some(p => name.includes(p))) platform = "Linux";
@@ -272,19 +299,19 @@ function parseAssetName(assetName: string): { platform: string; architecture: st
   let architecture = "";
   const isAppImage = name.includes(FILE_EXTENSIONS.APPIMAGE);
   const isDebian = name.includes(FILE_EXTENSIONS.DEB);
-  
+
   if (ARCH_PATTERNS.X64.some(p => name.includes(p))) {
     if (platform === "macOS") {
       const macReleaseType = name.includes(FILE_EXTENSIONS.DMG) ? 'DMG' : name.includes(FILE_EXTENSIONS.APP_BUNDLE) ? 'Bundle' : 'Binary';
       architecture = "Intel <span style='float: right;'>" + macReleaseType + "</span>";
     } else if (isAppImage) {
-      architecture = "x86 <span style='float: right;'>AppImage</span>";
+      architecture = "x86_64 <span style='float: right;'>AppImage</span>";
     } else if (isDebian) {
-      architecture = "x86 <span style='float: right;'>Debian</span>";
+      architecture = "x86_64 <span style='float: right;'>Debian</span>";
     } else if (isTar) {
-      architecture = "x64 <span style='float: right;'>Binary</span>";
+      architecture = "x86_64 <span style='float: right;'>Binary</span>";
     } else {
-      architecture = "x64";
+      architecture = "x86_64";
     }
   } else if (ARCH_PATTERNS.ARM64.some(p => name.includes(p))) {
     if (platform === "macOS") {
@@ -321,23 +348,23 @@ function parseAssetName(assetName: string): { platform: string; architecture: st
     }
   } else if (ARCH_PATTERNS.X86.some(p => name.includes(p))) {
     if (isAppImage) {
-      architecture = "AppImage <span style='float: right;'>x86</span>";
+      architecture = "AppImage <span style='float: right;'>x86_64</span>";
     } else if (isDebian) {
-      architecture = "Debian <span style='float: right;'>x86</span>";
+      architecture = "Debian <span style='float: right;'>x86_64</span>";
     } else if (isTar) {
-      architecture = "x86 <span style='float: right;'>Binary</span>";
+      architecture = "x86_64 <span style='float: right;'>Binary</span>";
     } else {
-      architecture = "x86";
+      architecture = "x86_64";
     }
   }
-  
+
   // Determine type
   let type: DownloadAsset['type'] = "archive";
   if (name.includes(FILE_EXTENSIONS.EXE)) type = "executable";
   else if (name.includes(FILE_EXTENSIONS.MSI) || name.includes(FILE_EXTENSIONS.DEB) || name.includes(FILE_EXTENSIONS.RPM)) type = "installer";
   else if (name.includes(FILE_EXTENSIONS.DMG) || name.includes(FILE_EXTENSIONS.APP_BUNDLE)) type = "bundle";
   else if (name.includes(FILE_EXTENSIONS.APPIMAGE)) type = "appimage";
-  
+
   return { platform, architecture, type };
 }
 
@@ -346,7 +373,7 @@ function parseAssetName(assetName: string): { platform: string; architecture: st
  */
 function getDisplayName(assetName: string, type: DownloadAsset['type']): string {
   const name = assetName.toLowerCase();
-  
+
   // Be specific about file types
   if (name.includes(FILE_EXTENSIONS.DMG)) return 'DMG Installer';
   if (name.includes(FILE_EXTENSIONS.APPIMAGE)) return 'AppImage';
@@ -357,7 +384,7 @@ function getDisplayName(assetName: string, type: DownloadAsset['type']): string 
   if (name.includes(FILE_EXTENSIONS.APP_BUNDLE)) return 'macOS App Bundle';
   if (name.includes(FILE_EXTENSIONS.TAR)) return 'TAR Archive';
   if (name.includes(FILE_EXTENSIONS.ZIP)) return 'ZIP Archive';
-  
+
   // Fallback to generic types
   switch (type) {
     case 'executable': return 'Executable';
@@ -375,12 +402,12 @@ function getDisplayName(assetName: string, type: DownloadAsset['type']): string 
 function formatFileSize(bytes: number): string {
   let size = bytes;
   let unitIndex = 0;
-  
+
   while (size >= 1024 && unitIndex < FILE_SIZE_UNITS.length - 1) {
     size /= 1024;
     unitIndex++;
   }
-  
+
   return `${Math.round(size)} ${FILE_SIZE_UNITS[unitIndex]}`;
 }
 
@@ -391,10 +418,10 @@ function formatFileSize(bytes: number): string {
  */
 export function generateGuiTable(releaseInfo: ReleaseInfo): string {
   // Filter for GUI assets (eigenwallet_*)
-  const guiAssets = releaseInfo.assets.filter(asset => 
+  const guiAssets = releaseInfo.assets.filter(asset =>
     asset.downloadUrl.includes(ASSET_PREFIXES.GUI)
   );
-  
+
   return generateTable(guiAssets, "GUI Downloads");
 }
 
@@ -403,11 +430,72 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
  */
 export function generateCliTable(releaseInfo: ReleaseInfo): string {
   // Filter for CLI assets (asb_* and swap_*)
-  const cliAssets = releaseInfo.assets.filter(asset => 
+  const cliAssets = releaseInfo.assets.filter(asset =>
     asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP)
   );
-  
+
   return generateTable(cliAssets, "CLI Tools");
+}
+
+/**
+ * Fetch AUR package version from AUR API
+ */
+async function fetchAurPackageVersion(packageName: string): Promise<string> {
+  try {
+    const response = await fetch(`https://aur.archlinux.org/rpc/v5/info?arg[]=${packageName}`);
+    if (!response.ok) {
+      console.warn(`AUR API responded with status: ${response.status} for package: ${packageName}`);
+      return 'N/A';
+    }
+
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      return data.results[0].Version || 'N/A';
+    }
+    return 'N/A';
+  } catch (error) {
+    console.warn(`Failed to fetch AUR version for ${packageName}:`, error);
+    return 'N/A';
+  }
+}
+
+/**
+ * Generate HTML table for AUR packages
+ */
+export async function generateAurTable(): Promise<string> {
+  // Fetch versions for all packages in parallel
+  const packagesWithVersions = await Promise.all(
+    AUR_PACKAGES.map(async (pkg) => {
+      const version = await fetchAurPackageVersion(pkg.name);
+      return { ...pkg, version };
+    })
+  );
+
+  const tableRows = packagesWithVersions.map(pkg => {
+    return `  <tr>
+    <td>${pkg.architectures.join(", ")}</td>
+    <td><a href="${pkg.packageUrl}"><code>${pkg.name}</code></a></td>
+    <td>${pkg.version}</td>
+    <td><a href="${pkg.maintainerUrl}">${pkg.maintainer}</a></td>
+  </tr>`;
+  }).join('\n');
+
+  return `<table>
+  <thead>
+    <tr>
+      <th>Architecture</th>
+      <th>Package</th>
+      <th>Version</th>
+      <th>Maintainer</th>
+    </tr>
+  </thead>
+  <tbody>
+${tableRows}
+  <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+  These packages are unofficial and communitity maintained
+  </td>
+  </tbody>
+</table>`;
 }
 
 /**
@@ -441,14 +529,14 @@ function generateTable(assets: DownloadAsset[], title: string): string {
 
   // Check if Windows builds are missing and add notice
   const hasWindowsBuilds = platformGroups['Windows'] && platformGroups['Windows'].length > 0;
-  
+
   // Define platform order and icons
   for (const platform of PLATFORM_ORDER) {
     if (!platformGroups[platform]) continue;
-    
+
     const platformAssets = platformGroups[platform];
     const icon = PLATFORM_ICONS[platform] || "";
-    
+
     // Add platform header row
     if (platformAssets.length > 1) {
       tableHtml += `
@@ -463,13 +551,13 @@ function generateTable(assets: DownloadAsset[], title: string): string {
     for (const asset of platformAssets) {
       const architecture = platformAssets.length === 1 ? `${icon} ${platform}${asset.architecture ? ` (${asset.architecture})` : ''}` : asset.architecture;
       const fileName = asset.downloadUrl.split('/').pop() || 'Unknown';
-      const fileNameLink = asset.type === 'instructions' 
+      const fileNameLink = asset.type === 'instructions'
         ? `<a href="${asset.downloadUrl}">Instructions</a>`
         : `<a href="${asset.downloadUrl}" style="text-decoration: none;"><code style="font-size: 0.85em; word-break: break-all;">${fileName}</code></a>`;
-      const signatureLink = asset.signatureUrl 
+      const signatureLink = asset.signatureUrl
         ? `<a href="${asset.signatureUrl}">signature</a>`
         : '';
-      
+
       tableHtml += `
     <tr>
       <td>${architecture}</td>
@@ -636,12 +724,14 @@ export async function processDownloadTemplate(template: string, downloadAssets: 
   
   const guiTable = generateGuiTable(releaseInfo);
   const cliTable = generateCliTable(releaseInfo);
-  
+  const aurTable = await generateAurTable();
+
   return template
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.VERSION.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), releaseInfo.version)
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.RELEASE_DATE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), releaseInfo.releaseDate)
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.GUI_TABLE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), guiTable)
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.CLI_TABLE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), cliTable)
+    .replace(new RegExp(TEMPLATE_PLACEHOLDERS.AUR_TABLE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), aurTable)
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.HASHES_LINK.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), releaseInfo.hashesUrl)
     .replace(new RegExp(TEMPLATE_PLACEHOLDERS.SIGNING_KEY_LINK.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), releaseInfo.signingKeyUrl);
-} 
+}

@@ -11,3 +11,7 @@ Command-line tools for debugging purposes or to run a a maker (to provide liquid
 {{CLI_TABLE}}
 
 _The release was published on {{RELEASE_DATE}}._ _Read this [guide](https://docs.unstoppableswap.net/getting_started/verify_tauri_signature) to verify the signature of the binaries._
+
+### Unofficial Arch User Repository (AUR) packages
+
+{{AUR_TABLE}}
