@@ -247,11 +247,10 @@ a:not([class]) {
   text-decoration-skip-ink: auto;
 }
 
-/* Make links red, line break links anywhere */
+/* Make links red */
 a,
 a:visited {
   color: var(--link-visited);
-  line-break: anywhere;
 }
 
 a:focus {
