@@ -152,6 +152,7 @@ function generateSocialLinks(): string {
     <a href="https://x.com/eigenwallet" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/x.svg" alt="Twitter/X" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
     <a href="https://matrix.to/#/%23unstoppableswap-space:matrix.org" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/matrix.svg" alt="Matrix" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
     <a href="https://github.com/eigenwallet/core" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/github.svg" alt="GitHub" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
+    <a href="http://eigenwu5vl53rjyd3zxfzy25mfoaeqlhpuvlu5s46ygggllfbb4beiid.onion/" target="_blank" style="text-decoration: none; color: inherit; margin: 0 1rem;"><img src="imgs/tor.svg" alt="Tor" style="height: 1.5em; width: 1.5em; vertical-align: baseline; display: inline;"></a>
   </div>`;
 }
 
