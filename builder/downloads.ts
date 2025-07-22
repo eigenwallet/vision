@@ -473,7 +473,7 @@ export async function generateAurTable(): Promise<string> {
 
   const tableRows = packagesWithVersions.map(pkg => {
     return `  <tr>
-    <td>${pkg.architectures.join(", ")}</td>
+    <td class="hide-mobile">${pkg.architectures.join(", ")}</td>
     <td><a href="${pkg.packageUrl}"><code>${pkg.name}</code></a></td>
     <td>${pkg.version}</td>
     <td><a href="${pkg.maintainerUrl}">${pkg.maintainer}</a></td>
@@ -483,7 +483,7 @@ export async function generateAurTable(): Promise<string> {
   return `<table>
   <thead>
     <tr>
-      <th>Architecture</th>
+      <th class="hide-mobile">Architecture</th>
       <th>Package</th>
       <th>Version</th>
       <th>Maintainer</th>
@@ -491,7 +491,7 @@ export async function generateAurTable(): Promise<string> {
   </thead>
   <tbody>
 ${tableRows}
-  <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+  <td colspan="4" class="notice">
   These packages are unofficial and communitity maintained
   </td>
   </tbody>
@@ -572,7 +572,7 @@ function generateTable(assets: DownloadAsset[], title: string): string {
   if (!hasWindowsBuilds) {
     tableHtml += `
     <tr>
-      <td colspan="4" style="background-color:rgb(250, 241, 213); border: 1px solid #ffeaa7; color: #856404; padding: 0.75rem; text-align: center; font-style: italic;">
+      <td colspan="4" class="notice">
         Windows builds are coming in the next 1-2 weeks
       </td>
     </tr>`;
@@ -590,38 +590,38 @@ function generateTable(assets: DownloadAsset[], title: string): string {
  */
 async function downloadAsset(url: string, filename: string): Promise<string> {
   const assetsDir = path.join(process.cwd(), 'dist', 'assets');
-  
+
   // Ensure assets directory exists
   if (!fs.existsSync(assetsDir)) {
     fs.mkdirSync(assetsDir, { recursive: true });
   }
-  
+
   const localPath = path.join(assetsDir, filename);
   const relativePath = `assets/${filename}`;
-  
+
   // Check if file already exists
   if (fs.existsSync(localPath)) {
     console.log(`Asset already exists: ${relativePath}`);
     return relativePath;
   }
-  
+
   try {
     console.log(`\nDownloading ${filename}...`);
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       console.warn(`Failed to download ${filename}: ${response.status}`);
       return url; // Fallback to original URL
     }
-    
+
     const contentLength = parseInt(response.headers.get('content-length') || '0');
     const reader = response.body?.getReader();
-    
+
     if (!reader) {
       console.warn(`No response body for ${filename}`);
       return url;
     }
-    
+
     // Create progress bar
     const progressBar = new cliProgress.SingleBar({
       format: `  {filename} |{bar}| {percentage}% | {value}/{total} MB | ETA: {eta}s | Speed: {speed} MB/s`,
@@ -629,38 +629,38 @@ async function downloadAsset(url: string, filename: string): Promise<string> {
       barIncompleteChar: '\u2591',
       hideCursor: true
     }, cliProgress.Presets.shades_classic);
-    
+
     const totalMB = Math.round((contentLength / 1024 / 1024) * 100) / 100;
     progressBar.start(totalMB, 0, {
       filename: filename.length > 25 ? '...' + filename.slice(-22) : filename,
       speed: '0.00'
     });
-    
+
     const chunks: Uint8Array[] = [];
     let receivedLength = 0;
     const startTime = Date.now();
-    
+
     while (true) {
       const { done, value } = await reader.read();
-      
+
       if (done) break;
-      
+
       chunks.push(value);
       receivedLength += value.length;
-      
+
       // Update progress bar
       const receivedMB = Math.round((receivedLength / 1024 / 1024) * 100) / 100;
       const elapsedSeconds = (Date.now() - startTime) / 1000;
       const speed = elapsedSeconds > 0 ? Math.round((receivedMB / elapsedSeconds) * 100) / 100 : 0;
-      
+
       progressBar.update(receivedMB, {
         filename: filename.length > 25 ? '...' + filename.slice(-22) : filename,
         speed: speed.toFixed(2)
       });
     }
-    
+
     progressBar.stop();
-    
+
     // Combine chunks and write to file
     const buffer = new Uint8Array(receivedLength);
     let offset = 0;
@@ -668,7 +668,7 @@ async function downloadAsset(url: string, filename: string): Promise<string> {
       buffer.set(chunk, offset);
       offset += chunk.length;
     }
-    
+
     fs.writeFileSync(localPath, buffer);
     console.log(`✓ Downloaded ${filename} (${totalMB} MB)`);
     return relativePath;
@@ -686,16 +686,16 @@ async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseI
     releaseInfo.assets.map(async (asset) => {
       const filename = asset.downloadUrl.split('/').pop() || 'unknown';
       const signatureFilename = `${filename}.sig`;
-      
+
       // Download main asset
       const localDownloadUrl = await downloadAsset(asset.downloadUrl, filename);
-      
+
       // Download signature file if it exists
       let localSignatureUrl = asset.signatureUrl;
       if (asset.signatureUrl) {
         localSignatureUrl = await downloadAsset(asset.signatureUrl, signatureFilename);
       }
-      
+
       return {
         ...asset,
         downloadUrl: localDownloadUrl,
@@ -703,7 +703,7 @@ async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseI
       };
     })
   );
-  
+
   return {
     ...releaseInfo,
     assets: updatedAssets
@@ -715,13 +715,13 @@ async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseI
  */
 export async function processDownloadTemplate(template: string, downloadAssets: boolean = false): Promise<string> {
   let releaseInfo = await generateDownloadData();
-  
+
   // Download assets locally if flag is enabled
   if (downloadAssets) {
     console.log('Downloading assets locally...');
     releaseInfo = await downloadReleaseAssets(releaseInfo);
   }
-  
+
   const guiTable = generateGuiTable(releaseInfo);
   const cliTable = generateCliTable(releaseInfo);
   const aurTable = await generateAurTable();
