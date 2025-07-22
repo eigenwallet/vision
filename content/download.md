@@ -18,7 +18,6 @@
         display: none;
     }
 }
-
 </style>
 
 ### Wallet {{LATEST_VERSION}}
