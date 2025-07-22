@@ -109,7 +109,7 @@ Experts." https://www.getmonero.org/library/Zero-to-Monero-2-0-0.pdf. April
 
 [3]: kayabaNerve. 'Full-Chain Membership Proofs + Spend Authorization +
 Linkability.'
-https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86. _"This
+<a href="https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86" style="line-break: anywhere">https://gist.github.com/kayabaNerve/0e1f7719e5797c826b87249f21ab6f86</a>. _"This
 proposes an extension to FCMPs to make them a drop-in replacement for the
 existing CLSAG. In order to be such a replacement, the proof must handle
 membership (inherent to FCMPs), spend authorization, and linkability."_
