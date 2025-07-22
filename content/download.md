@@ -1,4 +1,14 @@
 <style>
+.notice {
+    background-color: rgb(250, 241, 213);
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 0.75rem;
+    text-align: center;
+    font-style: italic;
+    white-space: wrap !important;
+}
+
 @media (max-width: 600px) {
     table {
         font-size: 0.9em;
