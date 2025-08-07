@@ -454,7 +454,10 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
 export function generateCliTable(releaseInfo: ReleaseInfo): string {
   // Filter for CLI assets (asb_* and swap_*)
   const cliAssets = releaseInfo.assets.filter(asset =>
-    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB_CONTROLLER) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ORCHESTRATOR)
+    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) ||
+    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB_CONTROLLER) ||
+    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP) ||
+    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ORCHESTRATOR)
   );
   const aurAsset: DownloadAsset = {
     name: "AUR",
