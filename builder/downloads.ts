@@ -15,6 +15,7 @@ const ASSET_PREFIXES = {
   CLI_ASB: 'asb_',
   CLI_ASB_CONTROLLER: 'asb-controller_',
   CLI_SWAP: 'swap_',
+  CLI_ORCHESTRATOR: 'orchestrator_',
 } as const;
 
 const FILE_EXTENSIONS = {
@@ -228,7 +229,8 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
     (asset.name.startsWith(ASSET_PREFIXES.GUI) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_ASB) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_ASB_CONTROLLER) ||
-     asset.name.startsWith(ASSET_PREFIXES.CLI_SWAP)) &&
+     asset.name.startsWith(ASSET_PREFIXES.CLI_SWAP) ||
+     asset.name.startsWith(ASSET_PREFIXES.CLI_ORCHESTRATOR)) &&
     !asset.name.endsWith(FILE_EXTENSIONS.SIGNATURE)
   );
 
@@ -452,7 +454,7 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
 export function generateCliTable(releaseInfo: ReleaseInfo): string {
   // Filter for CLI assets (asb_* and swap_*)
   const cliAssets = releaseInfo.assets.filter(asset =>
-    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB_CONTROLLER) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP)
+    asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ASB_CONTROLLER) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_SWAP) || asset.downloadUrl.includes(ASSET_PREFIXES.CLI_ORCHESTRATOR)
   );
   const aurAsset: DownloadAsset = {
     name: "AUR",
