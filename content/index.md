@@ -25,7 +25,7 @@ all.
 - _eigenwallets_ form a peer-to-peer network between its users which we call the
   [_eigenweb_](eigenweb.html).
 - _eigenwallet_ magically syncs itself across different devices using a protocol
-  called [_eigensync_](eigensync.html).
+  called _eigensync_.
 
 **_eigenwallet_** shares a tech stack with upcoming Monero tech (Rust + Libp2p).
 It's perfectly positioned to integrate these in the future:
