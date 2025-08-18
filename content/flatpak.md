@@ -8,12 +8,12 @@ For Linux systems with Flatpak support, you can install _eigenwallet_ directly f
 
 ```sh
 # Install
-flatpak remote-add --if-not-exists unstoppableswap https://flatpak.eigenwallet.org/unstoppableswap.flatpakrepo
-flatpak install unstoppableswap net.unstoppableswap.gui
+flatpak remote-add --if-not-exists eigenwallet https://eigenwallet.github.io/core/eigenwallet.flatpakrepo
+flatpak install eigenwallet org.eigenwallet.app
 
 # Run
-flatpak run net.unstoppableswap.gui
+flatpak run org.eigenwallet.app
 
 # Update
-flatpak update net.unstoppableswap.gui
+flatpak update org.eigenwallet.app
 ```
