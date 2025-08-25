@@ -20,11 +20,11 @@ all.
   atomic swap implementation (called [_eigenswap_](eigenswap.html))
 - _eigenwallet_ provides network privacy with its first-class Tor support (using
   arti^[9])
-- _eigenwallet_ is platform-agnostic and works on Windows, Linux, macOS, iOS and
+- _eigenwallet_ is platform-agnostic and works on Windows, Linux, macOS and will work on iOS and
   Android
-- _eigenwallets_ form a peer-to-peer network between its users which we call the
+- _eigenwallets_ will form a peer-to-peer network between its users which we call the
   [_eigenweb_](eigenweb.html).
-- _eigenwallet_ magically syncs itself across different devices using a protocol
+- _eigenwallet_ will magically sync itself across different devices using a protocol
   called _eigensync_.
 
 **_eigenwallet_** shares a tech stack with upcoming Monero tech (Rust + Libp2p).
@@ -32,7 +32,6 @@ It's perfectly positioned to integrate these in the future:
 
 - _eigenwallet_ will be a Monero node (using cuprate^[10])
 - _eigenwallet_ will bring its users access to Serai DEX^[12]
-- _eigenwallet_ can bring payment channels to life (using grease-xmr^[11])
 
 ## Why?
 
