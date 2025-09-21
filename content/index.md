@@ -31,7 +31,7 @@ all.
 It's perfectly positioned to integrate these in the future:
 
 - _eigenwallet_ will be a Monero node (using cuprate^[10])
-- _eigenwallet_ will bring its users access to Serai DEX^[12]
+- _eigenwallet_ will bring its users access to liquidity pools such as Serai DEX^[12]
 
 ## Why?
 

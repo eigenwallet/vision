@@ -224,23 +224,28 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
     release = await response.json() as GitHubRelease;
   }
 
-  // Filter for relevant wallet assets (exclude .sig files)
+  // Filter for relevant wallet assets (exclude signature files .sig and .asc)
   const walletAssets = release.assets.filter(asset =>
     (asset.name.startsWith(ASSET_PREFIXES.GUI) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_ASB) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_ASB_CONTROLLER) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_SWAP) ||
      asset.name.startsWith(ASSET_PREFIXES.CLI_ORCHESTRATOR)) &&
-    !asset.name.endsWith(FILE_EXTENSIONS.SIGNATURE)
+    !asset.name.endsWith(FILE_EXTENSIONS.SIGNATURE) &&
+    !asset.name.endsWith('.asc')
   );
+
+  // Map of asset name to its download URL to resolve matching signature files
+  const assetNameToUrl = new Map(release.assets.map(a => [a.name, a.browser_download_url]));
 
   const assets: DownloadAsset[] = walletAssets.map(asset => {
     const { platform, architecture, type } = parseAssetName(asset.name);
+    const signatureUrl = assetNameToUrl.get(`${asset.name}.sig`) || assetNameToUrl.get(`${asset.name}.asc`) || '';
 
     return {
       name: getDisplayName(asset.name, type),
       downloadUrl: asset.browser_download_url,
-      signatureUrl: `${asset.browser_download_url}${FILE_EXTENSIONS.SIGNATURE}`, // Assume .sig files exist
+      signatureUrl,
       size: formatFileSize(asset.size),
       architecture,
       platform,
@@ -720,7 +725,9 @@ async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseI
   const updatedAssets = await Promise.all(
     releaseInfo.assets.map(async (asset) => {
       const filename = asset.downloadUrl.split('/').pop() || 'unknown';
-      const signatureFilename = `${filename}.sig`;
+      const signatureFilename = asset.signatureUrl && asset.signatureUrl.endsWith('.asc')
+        ? `${filename}.asc`
+        : `${filename}.sig`;
 
       // Download main asset
       const localDownloadUrl = await downloadAsset(asset.downloadUrl, filename);

@@ -440,9 +440,9 @@ export async function processStatsTemplate(template: string): Promise<string> {
   const statsData = await generateStatsData();
 
   return template
-    .replace(/\{\{TOTAL_LIQUIDITY\}\}/g, statsData.totalLiquidity !== null ? formatNumber(statsData.totalLiquidity) : 'No data')
-    .replace(/\{\{MAX_SWAP\}\}/g, statsData.maxSwap !== null ? formatNumber(statsData.maxSwap) : 'No data')
-    .replace(/\{\{MIN_SWAP\}\}/g, statsData.minSwap !== null ? formatNumber(statsData.minSwap) : 'No data')
+    .replace(/\{\{TOTAL_LIQUIDITY\}\}/g, statsData.totalLiquidity !== null ? formatNumber(statsData.totalLiquidity) : '?')
+    .replace(/\{\{MAX_SWAP\}\}/g, statsData.maxSwap !== null ? formatNumber(statsData.maxSwap) : '?')
+    .replace(/\{\{MIN_SWAP\}\}/g, statsData.minSwap !== null ? formatNumber(statsData.minSwap) : '?')
     .replace(/\{\{TOTAL_DOWNLOADS\}\}/g, formatLargeNumber(statsData.totalDownloads))
     .replace(/\{\{LIQUIDITY_CHART\}\}/g, statsData.liquidityChart)
     .replace(/\{\{LAST_UPDATED\}\}/g, statsData.lastUpdated);
