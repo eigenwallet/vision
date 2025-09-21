@@ -33,7 +33,17 @@ It's perfectly positioned to integrate these in the future:
 - _eigenwallet_ will be a Monero node (using cuprate^[10])
 - _eigenwallet_ will bring its users access to liquidity pools such as Serai DEX^[12]
 
-## Why?
+## Why "_eigenwallet_"?
+
+- "eigen" means "to own" in german, emphasizing the self-ownership and
+  self-custody you hold over your funds when using _eigenwallet_
+- "eigen" is a prefix used for mathematical concepts (like eigenvalues and
+  eigenvectors). Crypto and math are intrinstrically intertwined
+- we use an algorithm called _eigentrust_ to build a decentralized trust system
+  and assign a local trust score to each _peer_
+- we think it sounds cool
+
+## Why is this important?
 
 To understand what we are building (and why) we must hold a few truths to be
 non-negotiable.
@@ -85,16 +95,6 @@ Therefore any onramp **must**:
 
 The goal of _eigenwallet_ is to build exactly that onramp. In the process we
 will be building a great wallet as well.
-
-## Why "_eigenwallet_"?
-
-- "eigen" means "to own" in german, emphasizing the self-ownership and
-  self-custody you hold over your funds when using _eigenwallet_
-- "eigen" is a prefix used for mathematical concepts (like eigenvalues and
-  eigenvectors). Crypto and math are intrinstrically intertwined
-- we use an algorithm called _eigentrust_ to build a decentralized trust system
-  and assign a local trust score to each _peer_
-- we think it sounds **cool**
 
 ## References
 
