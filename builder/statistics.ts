@@ -39,9 +39,9 @@ interface LiquidityDayData {
 }
 
 interface StatsData {
-  totalLiquidity: number; // in BTC
-  maxSwap: number; // in BTC
-  minSwap: number; // in BTC
+  totalLiquidity: number | null; // in BTC
+  maxSwap: number | null; // in BTC
+  minSwap: number | null; // in BTC
   totalDownloads: number; // total GitHub downloads
   liquidityChart: string; // SVG string
   lastUpdated: string;
@@ -50,8 +50,8 @@ interface StatsData {
 interface CachedData {
   timestamp: number;
   data: {
-    peers: PeerData[];
-    liquidity: LiquidityDayData[];
+    peers: PeerData[] | null;
+    liquidity: LiquidityDayData[] | null;
     totalDownloads: number;
   };
 }
@@ -69,7 +69,7 @@ function isDevelopmentMode(): boolean {
 /**
  * Load cached data if available and valid
  */
-function loadCache(): { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; } | null {
+function loadCache(): { peers: PeerData[] | null; liquidity: LiquidityDayData[] | null; totalDownloads: number; } | null {
   if (!fs.existsSync(CACHE_FILE)) {
     return null;
   }
@@ -95,7 +95,7 @@ function loadCache(): { peers: PeerData[]; liquidity: LiquidityDayData[]; totalD
 /**
  * Save data to cache
  */
-function saveCache(data: { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; }): void {
+function saveCache(data: { peers: PeerData[] | null; liquidity: LiquidityDayData[] | null; totalDownloads: number; }): void {
   const cached: CachedData = {
     timestamp: Date.now(),
     data
@@ -112,27 +112,48 @@ function saveCache(data: { peers: PeerData[]; liquidity: LiquidityDayData[]; tot
 /**
  * Fetch API data
  */
-async function fetchApiData(): Promise<{ peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; }> {
+async function fetchApiData(): Promise<{ peers: PeerData[] | null; liquidity: LiquidityDayData[] | null; totalDownloads: number; }> {
   console.log('Fetching statistics data from APIs...');
-  
-  const [peersResponse, liquidityResponse, totalDownloads] = await Promise.all([
-    fetch(LIST_API_URL),
-    fetch(LIQUIDITY_DAILY_API_URL),
-    fetchTotalDownloads()
-  ]);
 
-  if (!peersResponse.ok) {
-    throw new Error(`List API responded with status: ${peersResponse.status}`);
+  try {
+    const [peersResponse, liquidityResponse, totalDownloads] = await Promise.all([
+      fetch(LIST_API_URL),
+      fetch(LIQUIDITY_DAILY_API_URL),
+      fetchTotalDownloads()
+    ]);
+
+    let peers: PeerData[] | null = null;
+    let liquidity: LiquidityDayData[] | null = null;
+
+    if (!peersResponse.ok) {
+      console.warn(`List API responded with status: ${peersResponse.status}`);
+    } else {
+      try {
+        peers = await peersResponse.json();
+      } catch (error) {
+        console.warn('Failed to parse peers response:', error);
+      }
+    }
+
+    if (!liquidityResponse.ok) {
+      console.warn(`Liquidity API responded with status: ${liquidityResponse.status}`);
+    } else {
+      try {
+        liquidity = await liquidityResponse.json();
+      } catch (error) {
+        console.warn('Failed to parse liquidity response:', error);
+      }
+    }
+
+    return { peers, liquidity, totalDownloads };
+  } catch (error) {
+    console.warn('Failed to fetch API data:', error);
+    return {
+      peers: null,
+      liquidity: null,
+      totalDownloads: 0
+    };
   }
-  
-  if (!liquidityResponse.ok) {
-    throw new Error(`Liquidity API responded with status: ${liquidityResponse.status}`);
-  }
-
-  const peers: PeerData[] = await peersResponse.json();
-  const liquidity: LiquidityDayData[] = await liquidityResponse.json();
-
-  return { peers, liquidity, totalDownloads };
 }
 
 /**
@@ -360,7 +381,7 @@ async function generateLiquidityChart(liquidityData: LiquidityDayData[]): Promis
  * Generate statistics data
  */
 export async function generateStatsData(): Promise<StatsData> {
-  let apiData: { peers: PeerData[]; liquidity: LiquidityDayData[]; totalDownloads: number; };
+  let apiData: { peers: PeerData[] | null; liquidity: LiquidityDayData[] | null; totalDownloads: number; };
 
   // Try cache in development mode
   if (isDevelopmentMode()) {
@@ -380,20 +401,27 @@ export async function generateStatsData(): Promise<StatsData> {
 
   const { peers, liquidity, totalDownloads } = apiData;
 
-  // Calculate statistics
-  const activePeers = peers.filter(p => !p.testnet);
-  
-  // Total liquidity from the latest daily data (first item = most recent, already in BTC)
-  const totalLiquidity = liquidity.length > 0 ? liquidity[0].totalLiquidityBtc : 0;
-  
-  const maxSwapSatoshis = Math.max(...activePeers.map(p => p.maxSwapAmount));
-  const minSwapSatoshis = Math.min(...activePeers.map(p => p.minSwapAmount));
-  
-  const maxSwap = satoshisToBtc(maxSwapSatoshis);
-  const minSwap = satoshisToBtc(minSwapSatoshis);
+  // Calculate statistics with null handling
+  const activePeers = peers ? peers.filter(p => !p.testnet) : [];
 
-  // Generate chart
-  const liquidityChart = await generateLiquidityChart(liquidity);
+  // Total liquidity from the latest daily data (first item = most recent, already in BTC)
+  const totalLiquidity = liquidity && liquidity.length > 0 ? liquidity[0].totalLiquidityBtc : null;
+
+  let maxSwap: number | null = null;
+  let minSwap: number | null = null;
+
+  if (peers && activePeers.length > 0) {
+    const maxSwapSatoshis = Math.max(...activePeers.map(p => p.maxSwapAmount));
+    const minSwapSatoshis = Math.min(...activePeers.map(p => p.minSwapAmount));
+
+    maxSwap = satoshisToBtc(maxSwapSatoshis);
+    minSwap = satoshisToBtc(minSwapSatoshis);
+  }
+
+  // Generate chart only if we have liquidity data
+  const liquidityChart = liquidity ? await generateLiquidityChart(liquidity) : `<svg width="800" height="200" viewBox="0 0 800 200">
+    <text x="400" y="100" text-anchor="middle" fill="#666">No data</text>
+  </svg>`;
 
   return {
     totalLiquidity,
@@ -410,11 +438,11 @@ export async function generateStatsData(): Promise<StatsData> {
  */
 export async function processStatsTemplate(template: string): Promise<string> {
   const statsData = await generateStatsData();
-  
+
   return template
-    .replace(/\{\{TOTAL_LIQUIDITY\}\}/g, formatNumber(statsData.totalLiquidity))
-    .replace(/\{\{MAX_SWAP\}\}/g, formatNumber(statsData.maxSwap))
-    .replace(/\{\{MIN_SWAP\}\}/g, formatNumber(statsData.minSwap))
+    .replace(/\{\{TOTAL_LIQUIDITY\}\}/g, statsData.totalLiquidity !== null ? formatNumber(statsData.totalLiquidity) : 'No data')
+    .replace(/\{\{MAX_SWAP\}\}/g, statsData.maxSwap !== null ? formatNumber(statsData.maxSwap) : 'No data')
+    .replace(/\{\{MIN_SWAP\}\}/g, statsData.minSwap !== null ? formatNumber(statsData.minSwap) : 'No data')
     .replace(/\{\{TOTAL_DOWNLOADS\}\}/g, formatLargeNumber(statsData.totalDownloads))
     .replace(/\{\{LIQUIDITY_CHART\}\}/g, statsData.liquidityChart)
     .replace(/\{\{LAST_UPDATED\}\}/g, statsData.lastUpdated);
