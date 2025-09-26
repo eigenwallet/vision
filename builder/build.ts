@@ -2,14 +2,12 @@ import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
 import { processDownloadTemplate } from './downloads.js';
-import { processStatsTemplate } from './statistics.js';
+import { processStatsTemplate, generateAllMakerPages } from './statistics.js';
 
 interface FootnoteMatch {
   num: string;
   content: string;
 }
-
-
 
 // Configure marked to handle footnotes and math
 marked.setOptions({
@@ -404,6 +402,10 @@ async function main(): Promise<void> {
   });
 
   await Promise.all(buildPromises);
+  
+  // Generate individual maker pages
+  await generateAllMakerPages('dist');
+  
   console.log(`\n🎉 Built ${markdownFiles.length} files successfully!`);
 }
 

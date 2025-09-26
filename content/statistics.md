@@ -38,6 +38,14 @@
   {{LIQUIDITY_CHART}}
 </div>
 
+### Top Makers Leaderboard
+
+{{LEADERBOARD_RECENT}}
+
+{{LEADERBOARD_ALLTIME}}
+
+**Note**: *If your maker is not in the leaderboard, it does not mean it is not online or not discoverable to other peers. This site cannot have a full view of the entire state of the peer to peer network at all times.*
+ 
 ---
 
 *Statistics updated on {{LAST_UPDATED}}.* 
