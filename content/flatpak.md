@@ -9,6 +9,7 @@ For Linux systems with Flatpak support, you can install _eigenwallet_ directly f
 ```sh
 # Install
 flatpak remote-add --if-not-exists eigenwallet https://eigenwallet.github.io/core/eigenwallet.flatpakrepo
+flatpak install flathub org.gnome.Platform//47
 flatpak install eigenwallet org.eigenwallet.app
 
 # Run
