@@ -440,7 +440,7 @@ function generateLeaderboardSections(providerQuoteStats: ProviderQuoteStats[] | 
     </div>`;
 
   return {
-    recentSection: renderSection('recently-seen', recentlySeenMakers, 'No makers seen in the last 7 days.', showRecentRedactedNote),
+    recentSection: renderSection('recently-seen', recentlySeenMakers, 'No data', showRecentRedactedNote),
     allTimeSection: renderSection('all-time', allVisibleMakers, 'No maker data available.', showAllRedactedNote)
   };
 }
