@@ -581,18 +581,16 @@ function generateTable(assets: DownloadAsset[], title: string): string {
     const icon = PLATFORM_ICONS[platform] || "";
 
     // Add platform header row
-    if (platformAssets.length > 1) {
-      tableHtml += `
+    tableHtml += `
     <tr>
       <td colspan="4" style="background-color: var(--pre-bg-color); font-weight: bold; padding: 0.75rem;">
         ${icon} ${platform}
       </td>
     </tr>`;
-    }
 
     // Add asset rows
     for (const asset of platformAssets) {
-      const architecture = platformAssets.length === 1 ? `${icon} ${platform}${asset.architecture ? ` (${asset.architecture})` : ''}` : asset.architecture;
+      const architecture = asset.architecture;
       const fileName = asset.downloadUrl.split('/').pop() || 'Unknown';
       const fileNameLink = asset.type === 'instructions'
         ? `<a href="${asset.downloadUrl}">Instructions</a>`
