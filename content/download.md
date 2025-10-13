@@ -28,11 +28,15 @@
 
 ### Developer Tools {{LATEST_VERSION}}
 
+Download the developer PGP key here: [binarybaron_and_einliterflasche.asc](https://raw.githubusercontent.com/eigenwallet/core/refs/heads/master/utils/gpg_keys/binarybaron_and_einliterflasche.asc)
+
 Command-line tools for debugging purposes or to run a a maker (to provide liquidity).
 
 {{CLI_TABLE}}
 
 _The release was published on {{RELEASE_DATE}}._ _Read this [guide](https://docs.unstoppableswap.net/getting_started/verify_tauri_signature) to verify the signature of the binaries._
+
+Download the developer PGP key here: [binarybaron_and_einliterflasche.asc](https://raw.githubusercontent.com/eigenwallet/core/refs/heads/master/utils/gpg_keys/binarybaron_and_einliterflasche.asc)
 
 <div id="aur"/>
 
