@@ -242,7 +242,7 @@ export async function generateDownloadData(): Promise<ReleaseInfo> {
 
   const assets: DownloadAsset[] = walletAssets.map(asset => {
     const { platform, architecture, type } = parseAssetName(asset.name);
-    const signatureUrl = assetNameToUrl.get(`${asset.name}.sig`) || assetNameToUrl.get(`${asset.name}.asc`) || '';
+    const signatureUrl = assetNameToUrl.get(`${asset.name}.asc`) || '';
 
     return {
       name: getDisplayName(asset.name, type),
@@ -726,9 +726,7 @@ async function downloadReleaseAssets(releaseInfo: ReleaseInfo): Promise<ReleaseI
   const updatedAssets = await Promise.all(
     releaseInfo.assets.map(async (asset) => {
       const filename = asset.downloadUrl.split('/').pop() || 'unknown';
-      const signatureFilename = asset.signatureUrl && asset.signatureUrl.endsWith('.asc')
-        ? `${filename}.asc`
-        : `${filename}.sig`;
+      const signatureFilename = `${filename}.asc`;
 
       // Download main asset
       const localDownloadUrl = await downloadAsset(asset.downloadUrl, filename);
