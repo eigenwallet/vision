@@ -26,9 +26,9 @@
 
 {{GUI_TABLE}}
 
-### Developer Tools {{LATEST_VERSION}}
+Download the developer PGP key here: _[binarybaron_and_einliterflasche.asc](https://raw.githubusercontent.com/eigenwallet/core/refs/heads/master/utils/gpg_keys/binarybaron_and_einliterflasche.asc)_
 
-Download the developer PGP key here: [binarybaron_and_einliterflasche.asc](https://raw.githubusercontent.com/eigenwallet/core/refs/heads/master/utils/gpg_keys/binarybaron_and_einliterflasche.asc)
+### Developer Tools {{LATEST_VERSION}}
 
 Command-line tools for debugging purposes or to run a a maker (to provide liquidity).
 
