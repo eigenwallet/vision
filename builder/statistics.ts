@@ -360,7 +360,7 @@ function generateLeaderboardSections(providerQuoteStats: ProviderQuoteStats[] | 
   }
 
   const allMakersByOnline = [...providerQuoteStats].sort((a, b) => b.online_days - a.online_days);
-  const allVisibleMakers = allMakersByOnline.filter(maker => (maker.online_days ?? 0) > 12);
+  const allVisibleMakers = allMakersByOnline.filter(maker => (maker.online_days ?? 0) > 1);
   const showAllRedactedNote = allVisibleMakers.length < allMakersByOnline.length;
 
   const recentlySeenCandidates = [...providerQuoteStats]
@@ -373,7 +373,7 @@ function generateLeaderboardSections(providerQuoteStats: ProviderQuoteStats[] | 
       }
       return b.online_days - a.online_days;
     });
-  const recentlySeenMakers = recentlySeenCandidates.filter(maker => (maker.online_days ?? 0) > 12);
+  const recentlySeenMakers = recentlySeenCandidates.filter(maker => (maker.online_days ?? 0) > 1);
   const showRecentRedactedNote = recentlySeenMakers.length < recentlySeenCandidates.length;
 
   const renderLastSeen = (maker: any): string => {
