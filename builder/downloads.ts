@@ -645,7 +645,7 @@ function generateTable(assets: DownloadAsset[], title: string, releaseDate?: str
     tableHtml += `
     <tr>
       <td colspan="4" class="notice">
-        Binaries are still being built... Please check back in a few hours
+        Binaries are still being built for this release... Please check back in a few hours
       </td>
     </tr>`;
   }
