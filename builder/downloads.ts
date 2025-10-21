@@ -452,7 +452,7 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
     type: "instructions"
   };
 
-  return generateTable([...guiAssets, flatpakAsset, aurAsset], "GUI Downloads");
+  return generateTable([...guiAssets, flatpakAsset, aurAsset], "GUI Downloads", releaseInfo.releaseDate);
 }
 
 /**
@@ -535,16 +535,38 @@ export async function generateAurTable(): Promise<string> {
   <tbody>
 ${tableRows}
   <td colspan="4" class="notice">
-  These packages are unofficial and communitity maintained
+  The Arch packages are unofficial and communitity maintained. Use at your own risk.
   </td>
   </tbody>
 </table>`;
 }
 
 /**
+ * Check if a release is less than 36 hours old
+ */
+function isRecentRelease(releaseDate: string): boolean {
+  const releaseTime = new Date(releaseDate).getTime();
+  const now = Date.now();
+  const twentyFourHoursInMs = 36 * 60 * 60 * 1000;
+  return (now - releaseTime) < twentyFourHoursInMs;
+}
+
+/**
+ * Check if GUI builds are missing for any major platform
+ */
+function hasGuiBuildsForAllPlatforms(assets: DownloadAsset[]): { hasLinux: boolean; hasWindows: boolean; hasMacOS: boolean } {
+  const platforms = assets.map(asset => asset.platform);
+  return {
+    hasLinux: platforms.includes('Linux'),
+    hasWindows: platforms.includes('Windows'),
+    hasMacOS: platforms.includes('macOS')
+  };
+}
+
+/**
  * Generate HTML table for downloads
  */
-function generateTable(assets: DownloadAsset[], title: string): string {
+function generateTable(assets: DownloadAsset[], title: string, releaseDate?: string): string {
   if (assets.length === 0) {
     return `<p><em>No ${title.toLowerCase()} available for this release.</em></p>`;
   }
@@ -570,8 +592,17 @@ function generateTable(assets: DownloadAsset[], title: string): string {
   </thead>
   <tbody>`;
 
-  // Check if Windows builds are missing and add notice
-  const hasWindowsBuilds = platformGroups['Windows'] && platformGroups['Windows'].length > 0;
+  // Check if this is a GUI table and if any major platform builds are missing
+  const isGuiTable = title === "GUI Downloads";
+  let showRecentReleaseNotice = false;
+  
+  if (isGuiTable && releaseDate) {
+    const platformStatus = hasGuiBuildsForAllPlatforms(assets.filter(asset => asset.type !== 'instructions'));
+    const isRecent = isRecentRelease(releaseDate);
+    const hasMissingBuilds = !platformStatus.hasLinux || !platformStatus.hasWindows || !platformStatus.hasMacOS;
+    
+    showRecentReleaseNotice = isRecent && hasMissingBuilds;
+  }
 
   // Define platform order and icons
   for (const platform of PLATFORM_ORDER) {
@@ -609,12 +640,12 @@ function generateTable(assets: DownloadAsset[], title: string): string {
     }
   }
 
-  // Add Windows notice at the bottom if no Windows builds are available
-  if (!hasWindowsBuilds) {
+  // Add notice for recent releases with missing GUI builds
+  if (showRecentReleaseNotice) {
     tableHtml += `
     <tr>
       <td colspan="4" class="notice">
-        Windows builds are coming in the next 1-2 weeks
+        Binaries are still being built... Please check back in a few hours
       </td>
     </tr>`;
   }
