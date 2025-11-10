@@ -451,8 +451,17 @@ export function generateGuiTable(releaseInfo: ReleaseInfo): string {
     platform: "Linux",
     type: "instructions"
   };
+  const homebrewAsset: DownloadAsset = {
+    name: "Homebrew",
+    downloadUrl: "/homebrew.html",
+    signatureUrl: "",
+    size: "",
+    architecture: "Universal <span style='float: right;'>Homebrew</span>",
+    platform: "macOS",
+    type: "instructions"
+  };
 
-  return generateTable([...guiAssets, flatpakAsset, aurAsset], "GUI Downloads", releaseInfo.releaseDate);
+  return generateTable([...guiAssets, flatpakAsset, aurAsset, homebrewAsset], "GUI Downloads", releaseInfo.releaseDate);
 }
 
 /**
