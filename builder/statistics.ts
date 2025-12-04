@@ -29,12 +29,21 @@ async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Respo
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url);
+      // Retry on non-successful responses (not 2xx)
+      if (!response.ok) {
+        if (i === retries - 1) {
+          console.log(`Fetch attempt ${i + 1}/${retries} failed for ${url} with status ${response.status}, no more retries`);
+          return response;
+        }
+        console.log(`Fetch attempt ${i + 1}/${retries} failed for ${url} with status ${response.status}, retrying...`);
+        continue;
+      }
       return response;
     } catch (error) {
       if (i === retries - 1) {
         throw error;
       }
-      console.log(`Fetch attempt ${i + 1} failed for ${url}, retrying...`);
+      console.log(`Fetch attempt ${i + 1}/${retries} failed for ${url} with network error, retrying...`);
     }
   }
   throw new Error(`Failed to fetch ${url} after ${retries} retries`);
