@@ -20,6 +20,25 @@ const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
 // Constants
 const SATOSHIS_PER_BTC = 100000000;
+const MAX_RETRIES = 20;
+
+/**
+ * Fetch with retry logic
+ */
+async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      return response;
+    } catch (error) {
+      if (i === retries - 1) {
+        throw error;
+      }
+      console.log(`Fetch attempt ${i + 1} failed for ${url}, retrying...`);
+    }
+  }
+  throw new Error(`Failed to fetch ${url} after ${retries} retries`);
+}
 
 // Data Interfaces
 interface PeerData {
@@ -147,10 +166,10 @@ async function fetchApiData(): Promise<{ peers: PeerData[] | null; liquidity: Li
 
   try {
     const [peersResponse, liquidityResponse, providerQuoteStatsResponse, providerDailySwapBoundsResponse, totalDownloads] = await Promise.all([
-      fetch(LIST_API_URL),
-      fetch(LIQUIDITY_DAILY_API_URL),
-      fetch(PROVIDER_QUOTE_STATS_API_URL),
-      fetch(PROVIDER_DAILY_SWAP_BOUNDS_API_URL),
+      fetchWithRetry(LIST_API_URL),
+      fetchWithRetry(LIQUIDITY_DAILY_API_URL),
+      fetchWithRetry(PROVIDER_QUOTE_STATS_API_URL),
+      fetchWithRetry(PROVIDER_DAILY_SWAP_BOUNDS_API_URL),
       fetchTotalDownloads()
     ]);
 
@@ -221,8 +240,8 @@ async function fetchTotalDownloads(): Promise<number> {
     
     // Fetch from both repositories in parallel
     const [coreResponse, guiResponse] = await Promise.all([
-      fetch(GITHUB_CORE_RELEASES_API),
-      fetch(GITHUB_GUI_RELEASES_API)
+      fetchWithRetry(GITHUB_CORE_RELEASES_API),
+      fetchWithRetry(GITHUB_GUI_RELEASES_API)
     ]);
     
     let totalDownloads = 0;
