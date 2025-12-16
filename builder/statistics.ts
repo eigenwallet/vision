@@ -20,7 +20,7 @@ const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
 // Constants
 const SATOSHIS_PER_BTC = 100000000;
-const MAX_RETRIES = 20;
+const MAX_RETRIES = 200;
 
 /**
  * Fetch with retry logic
